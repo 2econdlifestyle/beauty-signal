@@ -111,6 +111,13 @@ TEMPLATE = r"""<!DOCTYPE html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#FBF8F5">
+<meta name="description" content="네이버 검색·쇼핑·뉴스 데이터를 교차검증해 K-뷰티 키워드의 진입 기회를 판정하고, 그 적중률을 2년 백테스트로 증명한 대시보드. 실패 사례까지 전부 공개합니다.">
+<meta property="og:title" content="뷰티시그널 — 백테스트로 검증된 K-뷰티 진입 타이밍 신호">
+<meta property="og:description" content="기회 판정 적중률 67.1% (독립 사건 기준 59.4%) — 검증 방법론과 실패 사례까지 전부 공개. 규칙 기반, 비 블랙박스.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='9' fill='%23E4577F'/%3E%3Ccircle cx='16' cy='16' r='14' fill='none' stroke='%23FCE9EF' stroke-width='3'/%3E%3C/svg%3E">
 <title>뷰티시그널 — 백테스트로 검증된 K-뷰티 진입 타이밍 신호</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <style>
@@ -127,6 +134,7 @@ html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--ink);font-family:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo",sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden;
   word-break:keep-all;overflow-wrap:break-word} /* 한국어 단어 중간 줄바꿈 방지 ("키워/드" 현상) */
 ::selection{background:var(--rose-soft)}
+:focus-visible{outline:2px solid var(--rose);outline-offset:2px;border-radius:6px} /* 키보드 사용자 포커스 표시 */
 
 /* ---------- header ---------- */
 header{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:50;display:flex;align-items:center;gap:18px;
@@ -162,10 +170,14 @@ h1 .q{color:var(--rose)}
 .how-step em{font-style:normal;color:var(--rose);font-weight:700}
 
 /* stat strip */
-.stats{display:flex;justify-content:center;gap:0;margin:56px auto 0;max-width:880px;background:rgba(255,255,255,.66);
+.stats{display:flex;flex-wrap:wrap;justify-content:center;gap:0;margin:56px auto 0;max-width:880px;background:rgba(255,255,255,.66);
   backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:var(--r);box-shadow:0 20px 60px rgba(23,20,28,.07)}
-.stat{flex:1;padding:26px 12px;position:relative}
+.stat{flex:1;min-width:150px;padding:26px 12px;position:relative}
 .stat+.stat:before{content:"";position:absolute;left:0;top:22%;height:56%;width:1px;background:var(--line)}
+@media(max-width:680px){
+  .stat{flex:1 1 45%}
+  .stat:nth-child(3):before{display:none} /* 2×2 배치 시 줄 시작 칸의 세로선 제거 */
+}
 .stat b{display:block;font-size:clamp(26px,3.4vw,40px);font-weight:800;letter-spacing:-.03em;font-variant-numeric:tabular-nums;
   height:clamp(32px,4.2vw,48px);line-height:clamp(32px,4.2vw,48px)} /* 4칸 동일 라인 박스 — 크기가 달라도 베이스라인 통일 */
 .stat b.date{font-size:clamp(16px,1.9vw,21px);font-family:var(--mono);font-weight:700;letter-spacing:.02em}
