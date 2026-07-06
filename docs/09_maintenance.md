@@ -48,7 +48,11 @@ beauty-signal 폴더의 docs/를 전부 읽고 시작해. 특히:
 | validate_data.py | `N_WEEKS` |
 | make_bigkinds_console.py | 종료일 자동 계산이므로 수정 불요 |
 
-확장 후: 전체 재수집 → `validate_data.py` 통과 확인 → `backtest.py`·`stats_rigor.py` 재실행 → 수치가 바뀌면 **바뀐 이유를 decision_log에 기록** (기간 연장은 정당한 갱신, 규칙 변경 아님).
+⚠️ **D 수집 함정**: `collect_datalab_search.py`는 CSV에 이미 있는 키워드를 건너뛰는 재개 로직이 있어, 기간 확장 시 **`data/raw/search_trend.csv`를 먼저 삭제**해야 새 주가 반영된다 (S·C는 해당 없음 — S는 덮어쓰기, C는 종료일 자동 계산).
+
+확장 후: 전체 재수집 → `validate_data.py` 통과 확인 → `backtest.py`·`stats_rigor.py`·`forward_test.py` 재실행 → `build_dashboard.py` → 수치가 바뀌면 **바뀐 이유를 decision_log에 기록** (기간 연장은 정당한 갱신, 규칙 변경 아님).
+
+예시 (2026-07-06 기준, 종료일 2026-07-05로 확장 시): N_WEEKS 157 · backtest T_END 152/T_END_8W 148 · build_dashboard T_MAX 156/T_GT_MAX 152.
 
 ## 4. 문제 발생 시 진단 순서
 
