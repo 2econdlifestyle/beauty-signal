@@ -9,7 +9,7 @@ import pandas as pd
 import requests
 from dotenv import load_dotenv
 
-START_DATE, END_DATE, TIME_UNIT = "2023-07-03", "2026-06-28", "week"
+START_DATE, END_DATE, TIME_UNIT = "2023-07-03", "2026-07-05", "week"
 ROOT = Path(__file__).resolve().parent.parent
 OUT_CSV = ROOT / "data" / "raw" / "shopping_click.csv"
 URL = "https://openapi.naver.com/v1/datalab/shopping/categories"

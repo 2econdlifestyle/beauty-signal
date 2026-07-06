@@ -19,12 +19,12 @@ RAW = ROOT / "data" / "raw"
 OUT_DIR = ROOT / "dashboard"
 
 START = date(2023, 7, 3)
-N_WEEKS = 156
+N_WEEKS = 157
 PERIODS = [(START + timedelta(weeks=i)).isoformat() for i in range(N_WEEKS)]
 
 D_RATIO, D_SEASON, S_STRONG, C_MULT, C_FLOOR, GT_KEEP = 1.30, 1.15, 1.20, 2.00, 4, 0.90
 MIN_BASE = 5.0  # D 분모 최소 볼륨 가드 (D-027) — backtest.py와 동일
-T_MIN, T_MAX, T_GT_MAX = 55, 155, 151
+T_MIN, T_MAX, T_GT_MAX = 55, 156, 152
 
 
 def ma(arr, t, span, offset=0):

@@ -18,7 +18,7 @@ ROOT = Path(__file__).resolve().parent.parent
 RAW = ROOT / "data" / "raw"
 OUT = ROOT / "data" / "processed"
 START = date(2023, 7, 3)
-N_WEEKS = 156
+N_WEEKS = 157
 PERIODS = [(START + timedelta(weeks=i)).isoformat() for i in range(N_WEEKS)]
 GATE_THRESHOLD = 0.5
 SPIKE_PCT = 0.8  # D-012: 전주 대비 ±80% 급변 플래그
@@ -64,7 +64,7 @@ def main():
 
     print()
     print("=" * 70)
-    print("② 주차 정합 (156주 · 월요일 시작 · 연속)")
+    print(f"② 주차 정합 ({N_WEEKS}주 · 월요일 시작 · 연속)")
     print("=" * 70)
     fails += not check("표준 주차 목록과 일치 (뉴스)", sorted(nw.period.unique()) == PERIODS)
     fails += not check("표준 주차 목록과 일치 (쇼핑)", sorted(sc.period.unique()) == PERIODS)
@@ -79,8 +79,8 @@ def main():
     kws = sorted(st.keyword.unique())
     fails += not check("키워드 60개 · 3파일 일치",
                        len(kws) == 60 and kws == sorted(nw.keyword.unique()) == sorted(km.keyword.unique()))
-    fails += not check("뉴스: 전 키워드 156주 완비", (nw.groupby("keyword").size() == 156).all())
-    fails += not check("쇼핑: 7카테고리 × 156주", sc.category.nunique() == 7 and (sc.groupby("category").size() == 156).all())
+    fails += not check(f"뉴스: 전 키워드 {N_WEEKS}주 완비", (nw.groupby("keyword").size() == N_WEEKS).all())
+    fails += not check(f"쇼핑: 7카테고리 × {N_WEEKS}주", sc.category.nunique() == 7 and (sc.groupby("category").size() == N_WEEKS).all())
     fails += not check("키워드→쇼핑 카테고리 매핑 전건 유효", set(km.s_category) <= set(sc.category.unique()))
 
     print()
@@ -95,7 +95,7 @@ def main():
     print(f"0으로 채운 셀: {n_filled}개 / {len(filled)}셀 ({n_filled/len(filled):.1%})")
     incomplete = st.groupby("keyword").size()
     incomplete = incomplete[incomplete < N_WEEKS].sort_values()
-    print("156주 미만 키워드 (0 채움 대상):")
+    print(f"{N_WEEKS}주 미만 키워드 (0 채움 대상):")
     for k, n in incomplete.items():
         print(f"  - {k}: {n}주 → 게이트 {gate_share(n):.1%}")
     fails += not check("전 키워드 게이트 ≥50% (v1.1 유니버스)",
@@ -135,7 +135,7 @@ def main():
     print("=" * 70)
     # 인위적 케이스: 70주만 반환된 키워드 → 반드시 부재 판정이어야 함
     synthetic_returned_weeks = 70
-    fails += not check("인위적 결측 키워드(70/156주)가 부재 판정되는가",
+    fails += not check(f"인위적 결측 키워드(70/{N_WEEKS}주)가 부재 판정되는가",
                        gate_share(synthetic_returned_weeks) < GATE_THRESHOLD,
                        f"{gate_share(synthetic_returned_weeks):.1%} < 50%")
     # 구(舊) 로직 재현: 반환행 기준이면 100%가 나와 발동 불가 → 차이를 명시적으로 검증

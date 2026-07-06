@@ -13,7 +13,7 @@
   적중 = mean(w[t+1..t+4]) ≥ MA4(t) × 0.90
   평가 대상 = MA4(t) > 0 인 (k, t)  # 검색 활동이 있는 주만 (0/0 퇴화 방지)
 
-판정 구간: t ∈ [55, 151] (계절성 필터 워밍업 55주 + 정답 관찰 4주 확보) = 2024-07-22 ~ 2026-05-25, 97주
+판정 구간: t ∈ [T_START, T_END] (계절성 워밍업 55주 + 정답 관찰 4주 확보) — 상수는 기간 확장 시 docs/09 §3 참조
 베이스라인: ①무차별(전 평가행 기회) ②D 단독
 산출물: data/processed/backtest_signals.csv, data/processed/backtest_summary.json
 실행: python scripts/backtest.py
@@ -30,7 +30,7 @@ PROC = ROOT / "data" / "processed"
 RAW = ROOT / "data" / "raw"
 
 START = date(2023, 7, 3)
-N_WEEKS = 156
+N_WEEKS = 157
 PERIODS = [(START + timedelta(weeks=i)).isoformat() for i in range(N_WEEKS)]
 
 # --- 임계값 (1단계 가설 초기값, D-015 동결 설계) ---
@@ -44,8 +44,8 @@ GT_KEEP = 0.90       # 정답: 이후 4주 평균 ≥ 직전 4주 평균 × 0.90
 MIN_BASE = 5.0       # D 분모 최소 볼륨 가드 (D-027): MA12 < 5(자기 스케일 5%)면 비율이
                      # 분모 붕괴로 폭발 → D 판정 보류. 저속노화 신생 구간 거짓 신호 15건의 원인
 
-T_START, T_END = 55, 151          # 판정 구간 (양끝 포함)
-T_END_8W = 147                    # 8주 민감도용
+T_START, T_END = 55, 152          # 판정 구간 (양끝 포함)
+T_END_8W = 148                    # 8주 민감도용
 
 
 def load_matrices():
@@ -165,7 +165,7 @@ def main():
         bands[f"{lo}-{hi-1}"] = {"n": len(b), "precision": round(b.hit4.mean(), 4) if len(b) else None}
 
     summary = {
-        "eval_rows": int(len(ev)), "judgment_weeks": f"{PERIODS[T_START]}~{PERIODS[T_END]} (97주)",
+        "eval_rows": int(len(ev)), "judgment_weeks": f"{PERIODS[T_START]}~{PERIODS[T_END]} ({T_END - T_START + 1}주)",
         "base_rate_hit4": round(float(base_rate), 4),
         "results": res, "precision_8w": sens8, "grid_sensitivity": grid, "guard_sensitivity": guard_sens,
         "score_bands": bands,

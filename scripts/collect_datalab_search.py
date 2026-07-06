@@ -23,7 +23,7 @@ from dotenv import load_dotenv
 
 # ---------- 설정 ----------
 START_DATE = "2023-07-03"   # 백테스트(2024.7~) + 선행 1년 (계절성 필터·MA12 워밍업)
-END_DATE = "2026-06-28"
+END_DATE = "2026-07-05"
 TIME_UNIT = "week"
 REQUEST_DELAY_SEC = 0.3
 ZERO_GATE_THRESHOLD = 0.5   # 0이 아닌 주 비율이 50% 미만이면 '검색량 부재' 판정 (사전 정의 규칙)
