@@ -133,6 +133,14 @@ select{appearance:none;background:var(--card) url('data:image/svg+xml;utf8,<svg 
 .ev b{color:var(--ink);font-variant-numeric:tabular-nums}
 svg.spark{display:block;width:100%;margin-top:10px}
 
+/* ---------- simple hero (입문자 뷰 공통) ---------- */
+.shero{max-width:760px;margin:4px auto 28px;text-align:center;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:34px 30px;box-shadow:0 2px 6px rgba(23,20,28,.03)}
+.shero-badge{display:inline-block;font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--sub);background:#F4F0EC;border-radius:999px;padding:5px 12px;margin-bottom:14px}
+.shero-big{font-size:clamp(22px,3.2vw,32px);font-weight:800;letter-spacing:-.03em;line-height:1.3}
+.shero-big em{font-style:normal;color:var(--rose)}
+.shero p{color:var(--sub);font-size:13.5px;max-width:560px;margin:14px auto 0;line-height:1.7}
+.shero p b{color:var(--ink)}
+
 /* ---------- backtest ---------- */
 .subtabs{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin:2px 0 30px}
 .stab{border:1px solid var(--line);cursor:pointer;font:inherit;font-size:12.5px;font-weight:600;color:var(--sub);
@@ -277,12 +285,63 @@ function spark(k, t, w=300, h=56, mark=true){
   </svg>`;
 }
 
+/* ---------- 서브탭 공통 헬퍼 ---------- */
+function mountSubtabs(rootSel, tabs){
+  // tabs: [{id, label, html}]
+  const root = $(rootSel);
+  root.innerHTML = `
+  <div class="subtabs rv">${tabs.map((t,i)=>`<button class="stab ${i===0?'on':''}" data-s="${t.id}">${t.label}</button>`).join("")}</div>
+  ${tabs.map((t,i)=>`<div id="${t.id}" ${i?'style="display:none"':''}>${t.html}</div>`).join("")}`;
+  root.querySelectorAll(".stab").forEach(el=>el.onclick=()=>{
+    root.querySelectorAll(".stab").forEach(x=>x.classList.remove("on")); el.classList.add("on");
+    tabs.forEach(t=>$("#"+t.id).style.display = t.id===el.dataset.s?"":"none");
+    bindReveal();
+  });
+}
+
 /* ---------- 오늘의 판정 ---------- */
 const SEGS = [...new Set(Object.values(DATA.segments).flatMap(s=>s.split('|')))].sort();
+function whyNot(r){
+  if(!r.D) return "";
+  if(!r.S && r.C) return "검색은 늘었지만 쇼핑 클릭이 아직이고, 경쟁 보도도 급증했어요";
+  if(!r.S) return "검색은 늘었지만 실제 쇼핑 클릭이 아직 따라오지 않았어요 — 지켜보는 중";
+  if(r.C) return "검색·쇼핑 모두 좋지만 경쟁 보도가 급증 — 이미 늦었을 수 있어요";
+  return "";
+}
 function renderNow(){
   const rows0 = [...DATA.latest].sort((a,b)=>(b.opp-a.opp)||(b.D-a.D)||((b.dr||0)-(a.dr||0)));
   const nOpp = rows0.filter(r=>r.opp).length;
-  $("#v-now").innerHTML = `
+  const opps = rows0.filter(r=>r.opp);
+  const watch = rows0.filter(r=>r.D && !r.opp).slice(0,6);
+
+  /* --- 간단히 보기 (입문자·일반) --- */
+  const simple = `
+  <div class="shero rv">
+    <div class="shero-badge">${DATA.latest_period} 주 판정</div>
+    <div class="shero-big">${nOpp===0?"이번 주는 <em>서두르지 않아도</em> 됩니다":`지금 검토해볼 키워드가 <em>${nOpp}개</em> 있습니다`}</div>
+    <p>뷰티 키워드 60개를 전부 점검했습니다. ${nOpp===0
+      ?"세 조건(수요 급등·구매 관심·경쟁 여유)을 모두 충족한 키워드가 없었어요. 조용한 것도 판정입니다 — 무리하게 움직일 이유가 없다는 뜻이니까요."
+      :"아래 키워드는 검색이 뜨고, 실제 쇼핑 클릭이 따라오고, 경쟁 보도는 아직 조용합니다."}</p>
+  </div>
+  ${opps.length?`<div class="cards rv" style="margin-bottom:26px">${opps.map(r=>`
+    <div class="card"><div class="card-top"><div><h3>${r.k}</h3><div class="wk">${(DATA.segments[r.k]||'').toUpperCase()}</div>
+    <span class="res hit">기회 · 검토 추천</span></div>${ringSVG(r.score)}</div>
+    <ul class="ev">
+      <li><i class="id">D</i><span>검색이 평소(직전 12주)의 <b>${r.dr==null?'—':'×'+r.dr.toFixed(2)}</b> 수준으로 늘었어요</span></li>
+      <li><i class="is">S</i><span>실제 쇼핑 클릭도 함께 늘고 있어요</span></li>
+      <li><i class="ic">C</i><span>경쟁 브랜드 보도는 ${r.n4}건 — 아직 조용합니다</span></li>
+    </ul>${spark(r.k, DATA.periods.indexOf(r.period))}</div>`).join("")}</div>`:""}
+  ${watch.length?`
+  <p class="note rv" style="margin-top:8px"><b>기회는 아니지만 움직임이 보이는 키워드</b> — 검색이 늘고 있어서 다음 주가 궁금한 후보들입니다.</p>
+  <div class="cards rv">${watch.map(r=>`
+    <div class="card"><div class="card-top"><div><h3>${r.k}</h3><div class="wk">${(DATA.segments[r.k]||'').toUpperCase()}</div></div></div>
+    <p style="font-size:12.5px;color:var(--sub);margin-top:8px;line-height:1.6">${whyNot(r)}</p>
+    ${spark(r.k, DATA.periods.indexOf(r.period))}</div>`).join("")}</div>`
+  :(opps.length?"":`<p class="note rv">수요 급등(D) 단계에 들어선 키워드조차 없는 아주 조용한 주입니다.</p>`)}
+  <p class="foot-note rv">판정 기준이 궁금하다면 <b>전체 데이터 · 전문가</b> 탭에서 60개 키워드의 신호 상태를 직접 볼 수 있습니다.</p>`;
+
+  /* --- 전체 데이터 (전문가) --- */
+  const pro = `
   <p class="note rv">최신 주 <span class="f">${DATA.latest_period}</span> 기준, 키워드 60개의 이번 주 상태입니다.
   ${nOpp===0?"<b>이번 주는 기회 신호가 없습니다</b> — 서두를 필요 없다는 뜻이고, 무신호도 판정입니다.":`이번 주 기회 신호 <b>${nOpp}건</b>이 있습니다.`}</p>
   <div class="legend rv">
@@ -325,6 +384,10 @@ function renderNow(){
     </tr>`).join("")}
     </tbody></table>` : `<div class="empty">조건에 맞는 키워드가 없습니다</div>`;
   }
+  mountSubtabs("#v-now", [
+    {id: "now-simple", label: "간단히 보기", html: simple},
+    {id: "now-pro", label: "전체 데이터 · 전문가", html: pro},
+  ]);
   ["nowQ","nowSeg","nowState"].forEach(id=>$("#"+id).addEventListener("input", draw));
   draw();
 }
@@ -337,9 +400,41 @@ function ringSVG(score){
     <circle class="fgc" cx="26" cy="26" r="${r}" fill="none" stroke-width="5" stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${c.toFixed(1)}" data-off="${off.toFixed(1)}"/>
   </svg><b>${score}</b></div>`;
 }
+function cardHTML(c){
+  const r = c.hit==null?`<span class="res tbd">관찰 중</span>`:c.hit?`<span class="res hit">적중 · 4주 지속</span>`:`<span class="res miss">실패 · 수요 회귀</span>`;
+  return `<div class="card rv">
+  <div class="card-top"><div><h3>${c.k}</h3><div class="wk">${c.period} · ${(DATA.segments[c.k]||'').toUpperCase()}</div>${r}</div>${ringSVG(c.score)}</div>
+  <ul class="ev">
+    <li><i class="id">D</i><span>최근 4주 = 직전 12주의 <b>×${c.dr?.toFixed(2)}</b> · ${c.sr==null?'전년 검색량 없음(신규 키워드)':'전년 동기 ×'+c.sr.toFixed(2)+' 계절성 통과'}</span></li>
+    <li><i class="is">S</i><span>${DATA.categories[c.k]} 클릭 4주/12주 <b>×${c.s4v12==null?'—':c.s4v12.toFixed(2)}</b> 동반 상승</span></li>
+    <li><i class="ic">C</i><span>경쟁 보도 4주 <b>${c.n4}건</b> — 기준(${Math.max(Math.round(c.n12s*2), DATA.thresholds.C_floor)}건) 미만, 과열 아님</span></li>
+  </ul>
+  ${spark(c.k, c.t)}
+  </div>`;
+}
 function renderCards(){
   const kws = [...new Set(DATA.cards.map(c=>c.k))].sort();
-  $("#v-cards").innerHTML = `
+
+  /* --- 대표 사례 (입문자·일반) --- */
+  const judged = DATA.cards.filter(c=>c.hit!=null);
+  const topHits = [...judged].filter(c=>c.hit).sort((a,b)=>(b.score-a.score)||(b.t-a.t)).slice(0,3);
+  const topMiss = [...judged].filter(c=>!c.hit).sort((a,b)=>(b.score-a.score)||(b.t-a.t)).slice(0,3);
+  const nHit = judged.filter(c=>c.hit).length;
+  const simple = `
+  <div class="shero rv">
+    <div class="shero-badge">지난 2년의 기록</div>
+    <div class="shero-big">기회라고 말한 ${judged.length}번 중<br><em>${nHit}번이 실제로 맞았습니다</em></div>
+    <p>맞춘 것만 골라 보여주는 성적표는 믿을 수 없죠. 아래에 가장 강하게 "기회"라고 판단했던 사례를
+    <b>맞춘 것과 틀린 것 모두</b> 보여드립니다. 각 카드의 곡선은 판정 시점까지 1년의 검색 흐름이고, 배지가 4주 뒤 채점 결과입니다.</p>
+  </div>
+  <p class="note rv"><b>강하게 확신했고, 실제로 맞은 사례</b> — 판정 4주 뒤에도 수요가 유지·성장했습니다.</p>
+  <div class="cards rv" style="margin-bottom:26px">${topHits.map(cardHTML).join("")}</div>
+  <p class="note rv"><b>강하게 확신했지만, 틀린 사례</b> — 판정 직후 수요가 꺼졌습니다. 이런 실패도 숨기지 않는 것이 이 도구의 원칙입니다.</p>
+  <div class="cards rv">${topMiss.map(cardHTML).join("")}</div>
+  <p class="foot-note rv">전체 ${DATA.cards.length}건을 조건별로 탐색하려면 <b>전체 기록 · 전문가</b> 탭을 여세요 — "실패만" 필터도 있습니다.</p>`;
+
+  /* --- 전체 기록 (전문가) --- */
+  const pro = `
   <p class="note rv">지난 2년간 '기회'로 판정됐던 <b>${DATA.cards.length}건</b>의 기록입니다. 카드마다 <b>왜 기회로 봤는지 근거 3줄</b>이 붙고,
   오른쪽 원형 점수(0~100)는 규칙을 얼마나 강하게 충족했는지입니다. 상단 배지는 <b>4주 뒤 실제로 수요가 유지됐는지 사후 채점한 결과</b> —
   실패 사례도 숨기지 않고 그대로 보여드립니다.</p>
@@ -351,6 +446,11 @@ function renderCards(){
     <span class="fcount" id="cCount"></span>
   </div>
   <div class="cards" id="cardGrid"></div>`;
+
+  mountSubtabs("#v-cards", [
+    {id: "cards-simple", label: "대표 사례", html: simple},
+    {id: "cards-pro", label: "전체 기록 · 전문가", html: pro},
+  ]);
   const grid = $("#cardGrid");
   function draw(){
     const kw = $("#cKw").value, seg = $("#cSeg").value, res = $("#cRes").value, sort = $("#cSort").value;
@@ -364,18 +464,7 @@ function renderCards(){
     });
     if(sort==='score') list = [...list].sort((a,b)=>(b.score-a.score)||(b.t-a.t));
     $("#cCount").textContent = list.length + '/' + DATA.cards.length;
-    grid.innerHTML = list.length ? list.map(c=>{
-      const r = c.hit==null?`<span class="res tbd">관찰 중</span>`:c.hit?`<span class="res hit">적중 · 4주 지속</span>`:`<span class="res miss">실패 · 수요 회귀</span>`;
-      return `<div class="card rv">
-      <div class="card-top"><div><h3>${c.k}</h3><div class="wk">${c.period} · ${(DATA.segments[c.k]||'').toUpperCase()}</div>${r}</div>${ringSVG(c.score)}</div>
-      <ul class="ev">
-        <li><i class="id">D</i><span>최근 4주 = 직전 12주의 <b>×${c.dr?.toFixed(2)}</b> · ${c.sr==null?'전년 검색량 없음(신규 키워드)':'전년 동기 ×'+c.sr.toFixed(2)+' 계절성 통과'}</span></li>
-        <li><i class="is">S</i><span>${DATA.categories[c.k]} 클릭 4주/12주 <b>×${c.s4v12==null?'—':c.s4v12.toFixed(2)}</b> 동반 상승</span></li>
-        <li><i class="ic">C</i><span>경쟁 보도 4주 <b>${c.n4}건</b> — 기준(${Math.max(Math.round(c.n12s*2), DATA.thresholds.C_floor)}건) 미만, 과열 아님</span></li>
-      </ul>
-      ${spark(c.k, c.t)}
-      </div>`;
-    }).join("") : `<div class="empty" style="grid-column:1/-1">조건에 맞는 판정이 없습니다</div>`;
+    grid.innerHTML = list.length ? list.map(cardHTML).join("") : `<div class="empty" style="grid-column:1/-1">조건에 맞는 판정이 없습니다</div>`;
     bindReveal();
   }
   ["cKw","cSeg","cRes","cSort"].forEach(id=>$("#"+id).addEventListener("input", draw));
