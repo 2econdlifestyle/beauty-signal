@@ -161,7 +161,7 @@ h1 .q{color:var(--rose)}
 .hero p.sub b{color:var(--ink);font-weight:700}
 
 /* how-to steps */
-.how{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;max-width:880px;margin:44px auto 0;text-align:left}
+.how{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;max-width:1072px;margin:44px auto 0;text-align:left}
 @media(max-width:760px){.how{grid-template-columns:1fr}}
 .how-step{background:rgba(255,255,255,.66);backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:18px;padding:18px 18px 16px}
 .how-step i{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:var(--ink);color:#fff;font-style:normal;font-family:var(--mono);font-size:11.5px;font-weight:700;margin-bottom:10px}
@@ -170,7 +170,7 @@ h1 .q{color:var(--rose)}
 .how-step em{font-style:normal;color:var(--rose);font-weight:700}
 
 /* stat strip */
-.stats{display:flex;flex-wrap:wrap;justify-content:center;gap:0;margin:56px auto 0;max-width:880px;background:rgba(255,255,255,.66);
+.stats{display:flex;flex-wrap:wrap;justify-content:center;gap:0;margin:56px auto 0;max-width:1072px;background:rgba(255,255,255,.66);
   backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:var(--r);box-shadow:0 20px 60px rgba(23,20,28,.07)}
 .stat{flex:1;min-width:150px;padding:26px 12px;position:relative}
 .stat+.stat:before{content:"";position:absolute;left:0;top:22%;height:56%;width:1px;background:var(--line)}
@@ -202,7 +202,7 @@ h1 .q{color:var(--rose)}
 .note .f{font-family:var(--mono);font-size:12px;background:#F4F0EC;border-radius:6px;padding:2px 7px;color:var(--ink)}
 
 /* legend — 4카드 내부 그리드 통일: [배지 44px | 텍스트], 제목·설명 왼쪽 라인 동일 */
-.legend{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;max-width:1000px;margin:0 auto 22px}
+.legend{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin:0 0 22px}
 .legend>div{display:grid;grid-template-columns:44px 1fr;column-gap:2px;align-items:start;
   background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px;font-size:12.5px}
 .legend i{grid-row:1 / span 2;justify-self:start;margin-top:1px;font-style:normal} /* <i> 기본 이탤릭 제거 */
@@ -260,7 +260,7 @@ select{appearance:none;background:var(--card) url('data:image/svg+xml;utf8,<svg 
 svg.spark{display:block;width:100%;margin-top:10px}
 
 /* ---------- simple hero (입문자 뷰 공통) ---------- */
-.shero{max-width:760px;margin:4px auto 28px;text-align:center;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:34px 30px;box-shadow:0 2px 6px rgba(23,20,28,.03)}
+.shero{margin:4px 0 28px;text-align:center;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:34px 30px;box-shadow:0 2px 6px rgba(23,20,28,.03)}
 .shero-badge{display:inline-block;font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--sub);background:#F4F0EC;border-radius:999px;padding:5px 12px;margin-bottom:14px}
 .shero-big{font-size:clamp(22px,3.2vw,32px);font-weight:800;letter-spacing:-.03em;line-height:1.3}
 .shero-big em{font-style:normal;color:var(--rose)}
@@ -272,7 +272,7 @@ svg.spark{display:block;width:100%;margin-top:10px}
 .stab{border:1px solid var(--line);cursor:pointer;font:inherit;font-size:12.5px;font-weight:600;color:var(--sub);
   padding:8px 16px;border-radius:999px;background:var(--card);transition:.25s}
 .stab.on{background:var(--rose);border-color:var(--rose);color:#fff;box-shadow:0 4px 14px rgba(228,87,127,.3)}
-.steps{max-width:720px;margin:0 auto;display:grid;gap:12px}
+.steps{display:grid;gap:12px}
 .step{display:grid;grid-template-columns:34px 1fr;gap:14px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px}
 .step i{width:26px;height:26px;border-radius:50%;background:var(--ink);color:#fff;font-style:normal;font-family:var(--mono);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:2px}
 .step b{display:block;font-size:14px;letter-spacing:-.01em;margin-bottom:4px}
@@ -282,7 +282,7 @@ svg.spark{display:block;width:100%;margin-top:10px}
 .bt-hl .big{font-size:clamp(30px,4.6vw,54px);font-weight:800;letter-spacing:-.04em;line-height:1.15}
 .bt-hl .big em{font-style:normal;color:var(--rose)}
 .bt-hl .exp{color:var(--sub);font-size:14.5px;max-width:640px;margin:18px auto 0}
-.bars{max-width:720px;margin:0 auto 46px;padding:30px 34px}
+.bars{margin:0 0 46px;padding:30px 34px}
 .bar-row{display:grid;grid-template-columns:150px 1fr 76px;align-items:center;gap:16px;padding:11px 0}
 .bar-row+.bar-row{border-top:1px dashed var(--line)}
 .bar-row .lb{font-size:13px;font-weight:600;color:var(--sub)}
@@ -292,7 +292,7 @@ svg.spark{display:block;width:100%;margin-top:10px}
 .hero-bar .fill{background:linear-gradient(90deg,var(--rose),var(--rose-deep))}
 .bar-row .vl{font-family:var(--mono);font-size:13px;font-weight:700;text-align:right;font-variant-numeric:tabular-nums}
 .hero-bar .vl{color:var(--rose-deep)}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px;max-width:860px;margin:0 auto}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
 @media(max-width:760px){.grid2{grid-template-columns:1fr}.bar-row{grid-template-columns:104px 1fr 64px}}
 .mini{padding:24px 26px}
 .mini h4{font-size:14px;font-weight:800;letter-spacing:-.01em;margin-bottom:12px}
@@ -304,7 +304,7 @@ svg.spark{display:block;width:100%;margin-top:10px}
 .foot-note{max-width:860px;margin:26px auto 0;font-size:12.5px;color:var(--sub);text-align:center}
 
 /* glossary */
-.glossary{max-width:860px;margin:70px auto 0;padding:0 24px}
+.glossary{max-width:1120px;margin:70px auto 0;padding:0 24px}
 .glossary h4{font-size:15px;font-weight:800;letter-spacing:-.01em;margin-bottom:14px;text-align:center}
 .glossary dl{display:grid;gap:10px}
 .glossary dl>div{display:grid;grid-template-columns:120px 1fr;gap:14px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px 16px}
