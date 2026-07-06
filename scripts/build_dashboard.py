@@ -166,7 +166,9 @@ h1 .q{color:var(--rose)}
   backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:var(--r);box-shadow:0 20px 60px rgba(23,20,28,.07)}
 .stat{flex:1;padding:26px 12px;position:relative}
 .stat+.stat:before{content:"";position:absolute;left:0;top:22%;height:56%;width:1px;background:var(--line)}
-.stat b{display:block;font-size:clamp(26px,3.4vw,40px);font-weight:800;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.stat b{display:block;font-size:clamp(26px,3.4vw,40px);font-weight:800;letter-spacing:-.03em;font-variant-numeric:tabular-nums;
+  height:clamp(32px,4.2vw,48px);line-height:clamp(32px,4.2vw,48px)} /* 4칸 동일 라인 박스 — 크기가 달라도 베이스라인 통일 */
+.stat b.date{font-size:clamp(16px,1.9vw,21px);font-family:var(--mono);font-weight:700;letter-spacing:.02em}
 .stat b em{font-style:normal;color:var(--rose)}
 .stat b span{font:inherit;display:inline}
 .stat b small{font-size:.55em}
@@ -328,7 +330,7 @@ footer a{color:var(--sub)}
     <div class="stat"><b><em id="st1">0</em><em>%</em></b><span>기회 판정 적중률 (4주 지속)</span></div>
     <div class="stat"><b>+<span id="st2">0</span><small style="font-size:.55em">%p</small></b><span>급등 단독 판정 대비</span></div>
     <div class="stat"><b><span id="st3">0</span><small style="font-size:.55em">건</small></b><span>주 단위 신호 · 독립 32 에피소드</span></div>
-    <div class="stat"><b id="st4" style="font-size:clamp(17px,2vw,22px);line-height:2.1"></b><span>최신 판정 주</span></div>
+    <div class="stat"><b id="st4" class="date"></b><span>최신 판정 주</span></div>
   </div>
   <p class="stats-note rv">위 적중률은 담당자가 매주 받는 <b>주 단위 판정</b> 기준입니다. 연속 신호를 1건으로 묶은
   <b>독립 에피소드 기준으로는 32건 중 19건 = 59.4%</b> — 유리한 쪽만 헤드라인에 올리지 않습니다 (상세: 백테스트 검증 탭)</p>
