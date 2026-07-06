@@ -81,7 +81,9 @@ cp .env.example .env   # 네이버 개발자센터 Client ID/Secret 입력
 
 python scripts/collect_datalab_search.py     # D: 검색 트렌드 (게이트 리포트 포함)
 python scripts/collect_shopping_insight.py   # S: 쇼핑 클릭
-# C: 빅카인즈 — scripts/bigkinds_queries.txt 검색식으로 수집 (절차: docs/03)
+# C: 빅카인즈 — 셀프서비스 5분 절차 (docs/07_bigkinds_manual.md):
+python scripts/make_bigkinds_console.py      #   콘솔 스크립트 생성 → 브라우저에서 실행
+python scripts/bigkinds_to_csv.py            #   다운로드 결과 → news_weekly.csv
 
 python scripts/validate_data.py              # 3단계 검증 (21항목 자동 점검)
 python scripts/backtest.py                   # 백테스트 (backtest_summary.json)
