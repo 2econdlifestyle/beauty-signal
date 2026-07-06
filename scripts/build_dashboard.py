@@ -201,12 +201,13 @@ h1 .q{color:var(--rose)}
 .note b{color:var(--ink)}
 .note .f{font-family:var(--mono);font-size:12px;background:#F4F0EC;border-radius:6px;padding:2px 7px;color:var(--ink)}
 
-/* legend */
+/* legend — 4카드 내부 그리드 통일: [배지 44px | 텍스트], 제목·설명 왼쪽 라인 동일 */
 .legend{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;max-width:1000px;margin:0 auto 22px}
-.legend>div{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px;font-size:12.5px}
-.legend i{float:left;margin:2px 10px 6px 0;font-style:normal} /* <i> 기본 이탤릭 제거 — 한글 배지 기울어짐 방지 */
-.legend b{display:block;font-size:13px;letter-spacing:-.01em}
-.legend span{display:block;clear:none;color:var(--sub);margin-top:4px;line-height:1.55}
+.legend>div{display:grid;grid-template-columns:44px 1fr;column-gap:2px;align-items:start;
+  background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px;font-size:12.5px}
+.legend i{grid-row:1 / span 2;justify-self:start;margin-top:1px;font-style:normal} /* <i> 기본 이탤릭 제거 */
+.legend b{grid-column:2;font-size:13px;letter-spacing:-.01em;line-height:1.7}
+.legend span{grid-column:2;color:var(--sub);margin-top:3px;line-height:1.55}
 
 /* ---------- today table ---------- */
 .tbl{width:100%;border-collapse:collapse;font-size:13.5px}
@@ -475,7 +476,7 @@ function renderNow(){
     <div><i class="chip d">D</i><b>수요 급등</b><span>사람들이 이 키워드를 갑자기 많이 검색하기 시작했나요? (작년 이맘때의 시즌 효과는 제외)</span></div>
     <div><i class="chip s">S</i><b>구매 관심 동반</b><span>검색만 늘어난 게 아니라, 실제 쇼핑 클릭도 함께 늘고 있나요?</span></div>
     <div><i class="chip c">C</i><b>경쟁 과열 (역신호)</b><span>경쟁 브랜드가 이미 뉴스에 등장하고 있나요? 그렇다면 이미 늦었을 수 있습니다.</span></div>
-    <div><i class="pill o" style="width:auto;padding:3px 10px">기회</i><b>세 조건 충족</b><span>수요는 뜨는데(D) 지갑도 열리고(S) 경쟁은 아직 조용할 때(C 아님) — 이때만 켜집니다.</span></div>
+    <div><i class="pill o" style="padding:3px 8px;font-size:10px">기회</i><b>세 조건 충족</b><span>수요는 뜨는데(D) 지갑도 열리고(S) 경쟁은 아직 조용할 때(C 아님) — 이때만 켜집니다.</span></div>
   </div>
   <div class="fbar rv">
     <input type="search" id="nowQ" placeholder="키워드 검색">
