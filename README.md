@@ -101,11 +101,14 @@ python scripts/build_dashboard.py            # 대시보드 생성
 
 ```
 docs/       00 개요 · 01 설계 · 02 키워드 유니버스 · 03 데이터 수급 · 04 데이터 검증
-            05 백테스트 결과 · decision_log (결정 28건 + 실패 5건 실시간 기록)
-scripts/    수집 3종 · 검증 · 백테스트 · 대시보드 빌드
-data/       raw (수집 원본) · processed (검증·백테스트 산출물)
+            05 백테스트 결과 · 07 빅카인즈 매뉴얼 · 08 인터뷰 가이드 · 09 유지보수 런북
+            decision_log (결정 34건 + 실패 5건 실시간 기록) · retrospective (회고)
+scripts/    수집 3종 · 검증 · 백테스트 · 통계 보강 · 포워드 테스트 · 대시보드 빌드
+data/       raw (수집 원본) · processed (분석 산출물) · forward (실전 성적, append-only)
 dashboard/  beauty-signal.html (정적 단일 파일 데모 — 루트 index.html이 여기로 리다이렉트)
 ```
+
+유지보수·인수인계는 `docs/09_maintenance.md` 하나로 시작하면 됩니다 (세션 프롬프트·아키텍처·주간 루틴·기간 확장 런북·동결 목록 포함).
 
 ## 의사결정 로그
 
