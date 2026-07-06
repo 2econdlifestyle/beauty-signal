@@ -16,7 +16,8 @@
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--ink);font-family:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo",sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body{background:var(--bg);color:var(--ink);font-family:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo",sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden;
+  word-break:keep-all;overflow-wrap:break-word} /* 한국어 단어 중간 줄바꿈 방지 ("키워/드" 현상) */
 ::selection{background:var(--rose-soft)}
 
 /* ---------- header ---------- */
