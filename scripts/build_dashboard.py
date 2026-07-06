@@ -4,7 +4,7 @@
   소프트 오로라 그라디언트 · 초대형 타이포 · 링 게이지 · 카운트업 · 스크롤 리빌, 라이트 테마
 - 이원화(D-001): 상시 뷰(최신 주 전 키워드 판정 상태) + 이벤트성 판정 카드(기회 발생 건)
 - 데이터 임베드 방식: 외부 서버·API 불필요 → GitHub Pages 게시 가능
-실행: python scripts/build_dashboard.py  →  dashboard/index.html
+실행: python scripts/build_dashboard.py  →  dashboard/beauty-signal.html
 """
 import json
 from datetime import date, timedelta
@@ -98,9 +98,9 @@ def main():
 
     html = TEMPLATE.replace("__DATA__", json.dumps(data, ensure_ascii=False, separators=(",", ":")))
     OUT_DIR.mkdir(exist_ok=True)
-    (OUT_DIR / "index.html").write_text(html, encoding="utf-8")
+    (OUT_DIR / "beauty-signal.html").write_text(html, encoding="utf-8")
     n_opp_latest = sum(1 for r in latest if r["opp"])
-    print(f"dashboard/index.html 생성 — 최신 주 {PERIODS[T_MAX]}: 기회 {n_opp_latest}건 / 카드 총 {len(cards)}건")
+    print(f"dashboard/beauty-signal.html 생성 — 최신 주 {PERIODS[T_MAX]}: 기회 {n_opp_latest}건 / 카드 총 {len(cards)}건")
 
 
 TEMPLATE = r"""<!DOCTYPE html>
