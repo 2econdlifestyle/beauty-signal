@@ -203,6 +203,14 @@ h1 .q{color:var(--rose)}
 .pill.x{background:#F1EDE9;color:var(--faint)}
 .num{font-family:var(--mono);font-size:12px}
 
+/* ---------- filter bar (조건 검색) ---------- */
+.fbar{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:0 auto 20px}
+.fbar input[type=search]{background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:999px;
+  padding:10px 18px;font:inherit;font-size:13.5px;width:200px;box-shadow:0 2px 6px rgba(23,20,28,.04)}
+.fbar input[type=search]:focus{outline:2px solid var(--rose-soft);border-color:var(--rose)}
+.fcount{font-family:var(--mono);font-size:11.5px;color:var(--faint);align-self:center;padding:0 4px}
+.empty{padding:44px 20px;text-align:center;color:var(--faint);font-size:13.5px}
+
 /* ---------- cards ---------- */
 .filter{display:flex;justify-content:center;margin-bottom:22px}
 select{appearance:none;background:var(--card) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="6"><path d="M1 1l4 4 4-4" stroke="%2375707D" fill="none" stroke-width="1.5"/></svg>') no-repeat right 16px center;
@@ -360,9 +368,10 @@ function spark(k, t, w=300, h=56, mark=true){
 }
 
 /* ---------- 오늘의 판정 ---------- */
+const SEGS = [...new Set(Object.values(DATA.segments).flatMap(s=>s.split('|')))].sort();
 function renderNow(){
-  const rows = [...DATA.latest].sort((a,b)=>(b.opp-a.opp)||(b.D-a.D)||((b.dr||0)-(a.dr||0)));
-  const nOpp = rows.filter(r=>r.opp).length;
+  const rows0 = [...DATA.latest].sort((a,b)=>(b.opp-a.opp)||(b.D-a.D)||((b.dr||0)-(a.dr||0)));
+  const nOpp = rows0.filter(r=>r.opp).length;
   $("#v-now").innerHTML = `
   <p class="note rv">최신 주 <span class="f">${DATA.latest_period}</span> 기준, 키워드 60개의 이번 주 상태입니다.
   ${nOpp===0?"<b>이번 주는 기회 신호가 없습니다</b> — 서두를 필요 없다는 뜻이고, 무신호도 판정입니다.":`이번 주 기회 신호 <b>${nOpp}건</b>이 있습니다.`}</p>
@@ -372,18 +381,42 @@ function renderNow(){
     <div><i class="chip c">C</i><b>경쟁 과열 (역신호)</b><span>경쟁 브랜드가 이미 뉴스에 등장하고 있나요? 그렇다면 이미 늦었을 수 있습니다.</span></div>
     <div><i class="pill o" style="width:auto;padding:3px 10px">기회</i><b>세 조건 충족</b><span>수요는 뜨는데(D) 지갑도 열리고(S) 경쟁은 아직 조용할 때(C 아님) — 이때만 켜집니다.</span></div>
   </div>
-  <div class="panel rv" style="overflow-x:auto">
-  <table class="tbl"><thead><tr><th>키워드</th><th>분야</th><th title="수요 급등">D</th><th title="구매 관심 동반">S</th><th title="경쟁 과열(역신호)">C</th><th>판정</th><th title="최근 4주 검색량이 직전 12주의 몇 배인지">급등 배율</th><th title="작년 같은 시기 대비 몇 배인지">작년 대비</th><th title="최근 4주 경쟁 브랜드 관련 기사 수">경쟁 기사</th><th style="min-width:190px">최근 1년 검색 추이</th></tr></thead><tbody>
-  ${rows.map(r=>`<tr class="${r.opp?'opp':''}">
-    <td class="kwd">${r.k}</td><td class="seg">${(DATA.segments[r.k]||'').toUpperCase()}</td>
-    <td><span class="chip ${r.D?'d':''}">D</span></td>
-    <td><span class="chip ${r.S?'s':''}">S</span></td>
-    <td><span class="chip ${r.C?'c':''}">C</span></td>
-    <td>${r.opp?`<span class="pill o">기회 ${r.score}</span>`:`<span class="pill x">—</span>`}</td>
-    <td class="num">${r.dr==null?'—':'×'+r.dr.toFixed(2)}</td><td class="num">${r.sr==null?'신규':'×'+r.sr.toFixed(2)}</td><td class="num">${r.n4}</td>
-    <td>${spark(r.k, DATA.periods.indexOf(r.period), 190, 34, false)}</td>
-  </tr>`).join("")}
-  </tbody></table></div>`;
+  <div class="fbar rv">
+    <input type="search" id="nowQ" placeholder="키워드 검색">
+    <select id="nowSeg"><option value="">전체 분야</option>${SEGS.map(s=>`<option>${s}</option>`).join("")}</select>
+    <select id="nowState"><option value="">전체 상태</option><option value="opp">기회만</option><option value="d">D 발동</option><option value="s">S 발동</option><option value="c">C 발동</option><option value="quiet">무신호</option></select>
+    <span class="fcount" id="nowCount"></span>
+  </div>
+  <div class="panel rv" style="overflow-x:auto" id="nowTblWrap"></div>`;
+  function draw(){
+    const q = $("#nowQ").value.trim().toLowerCase();
+    const seg = $("#nowSeg").value, st = $("#nowState").value;
+    const rows = rows0.filter(r=>{
+      if(q && !r.k.toLowerCase().includes(q)) return false;
+      if(seg && !(DATA.segments[r.k]||'').split('|').includes(seg)) return false;
+      if(st==='opp' && !r.opp) return false;
+      if(st==='d' && !r.D) return false;
+      if(st==='s' && !r.S) return false;
+      if(st==='c' && !r.C) return false;
+      if(st==='quiet' && (r.D||r.S||r.C)) return false;
+      return true;
+    });
+    $("#nowCount").textContent = rows.length + '/60';
+    $("#nowTblWrap").innerHTML = rows.length ? `
+    <table class="tbl"><thead><tr><th>키워드</th><th>분야</th><th title="수요 급등">D</th><th title="구매 관심 동반">S</th><th title="경쟁 과열(역신호)">C</th><th>판정</th><th title="최근 4주 검색량이 직전 12주의 몇 배인지">급등 배율</th><th title="작년 같은 시기 대비 몇 배인지">작년 대비</th><th title="최근 4주 경쟁 브랜드 관련 기사 수">경쟁 기사</th><th style="min-width:190px">최근 1년 검색 추이</th></tr></thead><tbody>
+    ${rows.map(r=>`<tr class="${r.opp?'opp':''}">
+      <td class="kwd">${r.k}</td><td class="seg">${(DATA.segments[r.k]||'').toUpperCase()}</td>
+      <td><span class="chip ${r.D?'d':''}">D</span></td>
+      <td><span class="chip ${r.S?'s':''}">S</span></td>
+      <td><span class="chip ${r.C?'c':''}">C</span></td>
+      <td>${r.opp?`<span class="pill o">기회 ${r.score}</span>`:`<span class="pill x">—</span>`}</td>
+      <td class="num">${r.dr==null?'—':'×'+r.dr.toFixed(2)}</td><td class="num">${r.sr==null?'신규':'×'+r.sr.toFixed(2)}</td><td class="num">${r.n4}</td>
+      <td>${spark(r.k, DATA.periods.indexOf(r.period), 190, 34, false)}</td>
+    </tr>`).join("")}
+    </tbody></table>` : `<div class="empty">조건에 맞는 키워드가 없습니다</div>`;
+  }
+  ["nowQ","nowSeg","nowState"].forEach(id=>$("#"+id).addEventListener("input", draw));
+  draw();
 }
 
 /* ---------- 판정 카드 ---------- */
@@ -400,14 +433,31 @@ function renderCards(){
   <p class="note rv">지난 2년간 '기회'로 판정됐던 <b>${DATA.cards.length}건</b>의 기록입니다. 카드마다 <b>왜 기회로 봤는지 근거 3줄</b>이 붙고,
   오른쪽 원형 점수(0~100)는 규칙을 얼마나 강하게 충족했는지입니다. 상단 배지는 <b>4주 뒤 실제로 수요가 유지됐는지 사후 채점한 결과</b> —
   실패 사례도 숨기지 않고 그대로 보여드립니다.</p>
-  <div class="filter rv"><select id="kwFilter"><option value="">전체 키워드 (${kws.length}개)</option>${kws.map(k=>`<option>${k}</option>`).join("")}</select></div>
+  <div class="fbar rv">
+    <select id="cKw"><option value="">전체 키워드 (${kws.length}개)</option>${kws.map(k=>`<option>${k}</option>`).join("")}</select>
+    <select id="cSeg"><option value="">전체 분야</option>${SEGS.map(s=>`<option>${s}</option>`).join("")}</select>
+    <select id="cRes"><option value="">전체 결과</option><option value="hit">적중만</option><option value="miss">실패만</option><option value="tbd">관찰 중</option></select>
+    <select id="cSort"><option value="latest">최신순</option><option value="score">점수 높은순</option></select>
+    <span class="fcount" id="cCount"></span>
+  </div>
   <div class="cards" id="cardGrid"></div>`;
   const grid = $("#cardGrid");
-  function draw(f){
-    grid.innerHTML = DATA.cards.filter(c=>!f||c.k===f).map(c=>{
-      const res = c.hit==null?`<span class="res tbd">관찰 중</span>`:c.hit?`<span class="res hit">적중 · 4주 지속</span>`:`<span class="res miss">실패 · 수요 회귀</span>`;
+  function draw(){
+    const kw = $("#cKw").value, seg = $("#cSeg").value, res = $("#cRes").value, sort = $("#cSort").value;
+    let list = DATA.cards.filter(c=>{
+      if(kw && c.k!==kw) return false;
+      if(seg && !(DATA.segments[c.k]||'').split('|').includes(seg)) return false;
+      if(res==='hit' && c.hit!==true) return false;
+      if(res==='miss' && c.hit!==false) return false;
+      if(res==='tbd' && c.hit!=null) return false;
+      return true;
+    });
+    if(sort==='score') list = [...list].sort((a,b)=>(b.score-a.score)||(b.t-a.t));
+    $("#cCount").textContent = list.length + '/' + DATA.cards.length;
+    grid.innerHTML = list.length ? list.map(c=>{
+      const r = c.hit==null?`<span class="res tbd">관찰 중</span>`:c.hit?`<span class="res hit">적중 · 4주 지속</span>`:`<span class="res miss">실패 · 수요 회귀</span>`;
       return `<div class="card rv">
-      <div class="card-top"><div><h3>${c.k}</h3><div class="wk">${c.period} · ${(DATA.segments[c.k]||'').toUpperCase()}</div>${res}</div>${ringSVG(c.score)}</div>
+      <div class="card-top"><div><h3>${c.k}</h3><div class="wk">${c.period} · ${(DATA.segments[c.k]||'').toUpperCase()}</div>${r}</div>${ringSVG(c.score)}</div>
       <ul class="ev">
         <li><i class="id">D</i><span>최근 4주 = 직전 12주의 <b>×${c.dr?.toFixed(2)}</b> · ${c.sr==null?'전년 검색량 없음(신규 키워드)':'전년 동기 ×'+c.sr.toFixed(2)+' 계절성 통과'}</span></li>
         <li><i class="is">S</i><span>${DATA.categories[c.k]} 클릭 4주/12주 <b>×${c.s4v12==null?'—':c.s4v12.toFixed(2)}</b> 동반 상승</span></li>
@@ -415,11 +465,11 @@ function renderCards(){
       </ul>
       ${spark(c.k, c.t)}
       </div>`;
-    }).join("");
+    }).join("") : `<div class="empty" style="grid-column:1/-1">조건에 맞는 판정이 없습니다</div>`;
     bindReveal();
   }
-  draw("");
-  $("#kwFilter").onchange = e=>draw(e.target.value);
+  ["cKw","cSeg","cRes","cSort"].forEach(id=>$("#"+id).addEventListener("input", draw));
+  draw();
 }
 
 /* ---------- 백테스트 ---------- */
