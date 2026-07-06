@@ -22,7 +22,9 @@ body{background:var(--bg);color:var(--ink);font-family:"Pretendard Variable",Pre
 /* ---------- header ---------- */
 header{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:50;display:flex;align-items:center;gap:18px;
   background:rgba(255,255,255,.72);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
-  border:1px solid var(--line);border-radius:999px;padding:10px 12px 10px 20px;box-shadow:0 8px 30px rgba(23,20,28,.06)}
+  border:1px solid var(--line);border-radius:999px;padding:10px 12px 10px 20px;box-shadow:0 8px 30px rgba(23,20,28,.06);
+  transition:transform .35s cubic-bezier(.2,.7,.3,1),opacity .3s}
+header.hide{transform:translate(-50%,-90px);opacity:0;pointer-events:none}
 .logo{display:flex;align-items:center;gap:9px;font-weight:800;letter-spacing:-.02em;font-size:15px;white-space:nowrap}
 .logo i{width:10px;height:10px;border-radius:50%;background:var(--rose);display:inline-block;box-shadow:0 0 0 4px var(--rose-soft)}
 .hdr-chip{font-family:var(--mono);font-size:11px;color:var(--sub);background:#F4F0EC;border-radius:999px;padding:6px 12px;white-space:nowrap}
@@ -425,6 +427,12 @@ const io = new IntersectionObserver(es=>es.forEach(e=>{
   io.unobserve(e.target);
 }),{threshold:0,rootMargin:"0px 0px -40px 0px"});
 function bindReveal(){document.querySelectorAll(".rv:not(.in)").forEach(el=>io.observe(el))}
+
+/* 탭 바가 상단에 붙으면 로고 배너 숨김 (겹침 방지) */
+const _hdr = document.querySelector("header"), _tw = document.querySelector(".tabs-wrap");
+addEventListener("scroll", () => {
+  _hdr.classList.toggle("hide", _tw.getBoundingClientRect().top <= 20);
+}, {passive: true});
 
 renderNow(); renderCards(); renderBT();
 countUp($("#st1"), main.precision*100, 1);
