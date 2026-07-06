@@ -162,7 +162,9 @@ h1 .q{color:var(--rose)}
 .stat+.stat:before{content:"";position:absolute;left:0;top:22%;height:56%;width:1px;background:var(--line)}
 .stat b{display:block;font-size:clamp(26px,3.4vw,40px);font-weight:800;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
 .stat b em{font-style:normal;color:var(--rose)}
-.stat span{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;color:var(--sub);margin-top:6px;text-transform:uppercase}
+.stat b span{font:inherit;display:inline}
+.stat b small{font-size:.55em}
+.stat > span{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;color:var(--sub);margin-top:6px;text-transform:uppercase}
 
 /* ---------- nav tabs ---------- */
 .tabs-wrap{position:sticky;top:0;z-index:40;padding:14px 0 12px;background:linear-gradient(var(--bg) 65%,transparent)}
@@ -286,7 +288,7 @@ footer a{color:var(--sub)}
   <div class="how rv">
     <div class="how-step"><i>1</i><b>오늘의 판정 보기</b><span>이번 주 60개 키워드 중 <em>기회</em> 배지가 붙은 키워드가 있는지 확인하세요. 없으면 "이번 주는 서두를 필요 없다"는 뜻입니다.</span></div>
     <div class="how-step"><i>2</i><b>근거 확인하기</b><span>판정 카드에서 왜 기회인지 근거 3줄(수요 급등·구매 관심·경쟁 동향)을 읽고, 점수(0~100)로 규칙 충족 강도를 확인하세요.</span></div>
-    <div class="how-step"><i>3</i><b>믿어도 되는지 검증</b><span>백테스트 탭에서 이 판정 방식이 과거 2년간 얼마나 맞았는지(적중률 63.9%) 직접 확인한 뒤 기획 검토를 시작하세요.</span></div>
+    <div class="how-step"><i>3</i><b>믿어도 되는지 검증</b><span>백테스트 탭에서 이 판정 방식이 과거 2년간 얼마나 맞았는지 성적표로 직접 확인한 뒤 기획 검토를 시작하세요.</span></div>
   </div>
   <div class="stats rv">
     <div class="stat"><b><em id="st1">0</em><em>%</em></b><span>기회 판정 적중률 (4주 지속)</span></div>
