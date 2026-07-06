@@ -46,5 +46,5 @@
   a.href = URL.createObjectURL(blob);
   a.download = 'bigkinds_weekly_raw.txt';
   document.body.appendChild(a); a.click(); a.remove();
-  console.log('완료 — bigkinds_weekly_raw.txt 다운로드됨. 다음: python scripts/bigkinds_to_csv.py');
+  console.log('완료 — bigkinds_weekly_raw.txt 다운로드됨. 다음: python3 scripts/bigkinds_to_csv.py');
 })();
