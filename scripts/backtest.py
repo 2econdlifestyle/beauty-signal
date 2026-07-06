@@ -66,7 +66,7 @@ def ma(arr, t, span, offset=0):
     return arr[lo:hi].mean()
 
 
-def compute_rows(W, S, N, cat, d_ratio=D_RATIO, d_season=D_SEASON, min_base=MIN_BASE):
+def compute_rows(W, S, N, cat, d_ratio=D_RATIO, d_season=D_SEASON, min_base=MIN_BASE, gt_keep=GT_KEEP):
     rows = []
     for k in W.index:
         w = W.loc[k].to_numpy(dtype=float)
@@ -95,10 +95,10 @@ def compute_rows(W, S, N, cat, d_ratio=D_RATIO, d_season=D_SEASON, min_base=MIN_
             past4 = ma4
             fut4 = w[t + 1:t + 5].mean()
             evaluable = past4 > 0
-            hit4 = bool(fut4 >= past4 * GT_KEEP) if evaluable else None
+            hit4 = bool(fut4 >= past4 * gt_keep) if evaluable else None
             hit8 = None
             if evaluable and t <= T_END_8W:
-                hit8 = bool(w[t + 1:t + 9].mean() >= past4 * GT_KEEP)
+                hit8 = bool(w[t + 1:t + 9].mean() >= past4 * gt_keep)
             rows.append({
                 "keyword": k, "period": PERIODS[t], "t": t,
                 "ma4": round(ma4, 3), "ma12": round(ma12, 3), "d_ratio": round(d_r, 3) if np.isfinite(d_r) else None,

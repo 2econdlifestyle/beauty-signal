@@ -40,6 +40,8 @@ def main():
     cat = dict(zip(km.keyword, km.s_category))
     seg = dict(zip(kw_meta.keyword, kw_meta.segment))
     summary = json.loads((PROC / "backtest_summary.json").read_text(encoding="utf-8"))
+    stats_path = PROC / "stats_rigor.json"
+    stats = json.loads(stats_path.read_text(encoding="utf-8")) if stats_path.exists() else None
 
     latest, cards = [], []
     for k in sorted(W.index):
@@ -87,6 +89,7 @@ def main():
 
     data = {
         "decomp": decomp,
+        "stats": stats,
         "built": date.today().isoformat(),
         "periods": PERIODS,
         "latest_period": PERIODS[T_MAX],
@@ -586,7 +589,8 @@ function renderBT(){
     <div class="big">급등 맥락의 동전 던지기 <em>${fmtP(dOnly.precision)}</em>를<br>교차검증이 <em>${fmtP(main.precision)}</em>로 끌어올립니다</div>
     <p class="exp">${S.judgment_weeks} 주간 롤링 백테스트. 기회 판정 ${main.signals}건 중 ${fmtP(main.precision)}가 이후 4주간
     수요를 유지·성장 — 검색량 급등 하나만 보는 판정 대비 <b style="color:var(--rose-deep)">+${gain}%p</b>.
-    8주 기준으로도 ${fmtP(S.precision_8w["기회"])} vs ${fmtP(S.precision_8w["D 단독"])}로 우위가 유지됩니다.</p>
+    8주 기준으로도 ${fmtP(S.precision_8w["기회"])} vs ${fmtP(S.precision_8w["D 단독"])}로 우위가 유지됩니다.${DATA.stats?`
+    95% 신뢰구간은 ${fmtP(DATA.stats.ci_opportunity.lo)}~${fmtP(DATA.stats.ci_opportunity.hi)}이며, 필터 통과와 기각의 차이는 통계적으로 유의합니다(p<0.001).`:""}</p>
   </div>
   <div class="panel bars rv">
     <div class="bar-row"><span class="lb">무차별 판정 *</span><div class="track"><div class="fill" data-w="${all.precision*100}"></div></div><span class="vl">${fmtP(all.precision)}</span></div>
@@ -647,6 +651,19 @@ function renderBT(){
       </tbody></table>
       <p style="font-size:12px;color:var(--sub);margin-top:10px">점수는 "확신도"가 아니라 "규칙 충족 강도" — 밴드 간 차이가 크지 않으므로 점수 서열을 과신하지 마세요.</p>
     </div>
+    ${DATA.stats?`<div class="panel mini rv">
+      <h4>통계적 엄밀성 — 불리한 숫자까지 공개</h4>
+      <table><thead><tr><th>분석</th><th>결과</th></tr></thead><tbody>
+        <tr><td>기회 적중률 95% CI (Wilson)</td><td>${fmtP(DATA.stats.ci_opportunity.p)} [${fmtP(DATA.stats.ci_opportunity.lo)}~${fmtP(DATA.stats.ci_opportunity.hi)}]</td></tr>
+        <tr><td>통과 vs 기각 유의성</td><td>z=${DATA.stats.pass_vs_reject.z}, p&lt;0.001 <b style="color:var(--ok)">유의</b></td></tr>
+        <tr><td>에피소드 재집계 (연속 신호=1건)</td><td>${DATA.stats.episodes.n}건 중 ${DATA.stats.episodes.hit}건 = ${fmtP(DATA.stats.episodes.ci.p)}</td></tr>
+        <tr><td>ㄴ 에피소드 수준 개선</td><td>+${((DATA.stats.episodes.ci.p-DATA.stats.episodes.baseline_d.p)*100).toFixed(1)}%p, p=${DATA.stats.episodes.vs_baseline.p_value} <b class="warn">유의성 미달</b></td></tr>
+        <tr><td>정답 임계값 민감도 (0.85~1.00)</td><td>개선 폭 +8.5~+19.2%p 방향 일관</td></tr>
+      </tbody></table>
+      <p style="font-size:12px;color:var(--sub);margin-top:10px">주 단위 신호는 자기상관이 있어(같은 키워드의 연속 신호), 독립 사건에 가까운 에피소드 단위로 재집계하면
+      개선은 방향은 유지되나 표본 부족으로 유의성에 못 미칩니다. <b style="color:var(--ink)">그래서 매주 판정을 기록·채점하는 포워드 테스트를 가동 중입니다</b>
+      — 사후 수정이 불가능한 실전 성적이 이 숫자를 최종 검증할 것입니다 (저장소 data/forward/).</p>
+    </div>`:""}
     <div class="panel mini rv">
       <h4>신호 분포 — 조용한 유니버스는 설계의 결과</h4>
       <p style="font-size:12.5px;color:var(--sub);line-height:1.7">키워드 60개 중 신호를 낸 것은 18개. 나머지 42개가 2년간 침묵한 것은 결함이 아니라,
