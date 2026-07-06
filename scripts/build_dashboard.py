@@ -348,6 +348,9 @@ $("#built").textContent = "BUILT " + DATA.built;
 document.querySelectorAll(".tab").forEach(el=>el.onclick=()=>{
   document.querySelectorAll(".tab").forEach(x=>x.classList.remove("on")); el.classList.add("on");
   ["now","cards","bt"].forEach(v=>$("#v-"+v).style.display = v===el.dataset.v?"":"none");
+  // 깊이 스크롤된 상태에서 탭 전환 시 새 뷰의 시작(탭 바 위치)으로 복귀
+  const top = document.querySelector(".hero").offsetHeight - 4;
+  if (scrollY > top) scrollTo({top, behavior: "smooth"});
   bindReveal();
 });
 
