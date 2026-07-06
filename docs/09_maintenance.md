@@ -56,7 +56,7 @@ beauty-signal 폴더의 docs/를 전부 읽고 시작해. 특히:
 
 ## 4. 문제 발생 시 진단 순서
 
-1. `python scripts/validate_data.py` — 21항목 자동 점검 (스키마·주차·매핑·게이트 자체 테스트)
+1. `python3 scripts/validate_data.py` — 21항목 자동 점검 (스키마·주차·매핑·게이트 자체 테스트)
 2. 데이터랩 응답 관련: **0인 주는 응답에서 생략됨** (Failure #4의 근원) — 분모는 항상 전체 주 수
 3. 빅카인즈 스크립트 중단: 응답 형태 로그 확인 → docs/07 오류 대응표
 4. 대시보드 이상: `build_dashboard.py` 재실행 → 브라우저 콘솔 에러 확인. 과거 사례: 리빌 threshold 함정(D-030), 서브탭 전역 핸들러 충돌(mountSubtabs로 해결), CSS 스코프(.stat span)

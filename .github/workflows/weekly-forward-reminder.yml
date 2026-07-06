@@ -25,11 +25,11 @@ jobs:
               body: [
                 "매주 월요일 루틴 (약 10분). 포워드 로그는 append-only — 거르면 그 주는 영원히 빈다.",
                 "",
-                "- [ ] `python scripts/collect_datalab_search.py` (D — END_DATE 갱신 필요 시 docs/07 하단 참조)",
-                "- [ ] `python scripts/collect_shopping_insight.py` (S)",
+                "- [ ] `python3 scripts/collect_datalab_search.py` (D — END_DATE 갱신 필요 시 docs/07 하단 참조)",
+                "- [ ] `python3 scripts/collect_shopping_insight.py` (S)",
                 "- [ ] 빅카인즈 5분 절차 (C — docs/07_bigkinds_manual.md)",
-                "- [ ] `python scripts/forward_test.py` → 기록·채점 결과 확인",
-                "- [ ] `python scripts/build_dashboard.py` && commit && push",
+                "- [ ] `python3 scripts/forward_test.py` → 기록·채점 결과 확인",
+                "- [ ] `python3 scripts/build_dashboard.py` && commit && push",
                 "",
                 "완료 후 이 이슈를 닫으세요. 로그: `data/forward/forward_log.csv`"
               ].join("\n")

@@ -5,7 +5,7 @@
   ④정답 임계값(0.90) 민감도
 - 외부 패키지 없이 Wilson 구간·2표본 비율 z검정을 직접 구현
 산출: data/processed/stats_rigor.json + 콘솔 리포트
-실행: python scripts/stats_rigor.py
+실행: python3 scripts/stats_rigor.py
 """
 import json
 import math

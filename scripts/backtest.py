@@ -16,7 +16,7 @@
 판정 구간: t ∈ [T_START, T_END] (계절성 워밍업 55주 + 정답 관찰 4주 확보) — 상수는 기간 확장 시 docs/09 §3 참조
 베이스라인: ①무차별(전 평가행 기회) ②D 단독
 산출물: data/processed/backtest_signals.csv, data/processed/backtest_summary.json
-실행: python scripts/backtest.py
+실행: python3 scripts/backtest.py
 """
 import json
 from datetime import date, timedelta

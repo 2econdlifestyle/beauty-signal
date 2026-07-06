@@ -4,7 +4,7 @@
   소프트 오로라 그라디언트 · 초대형 타이포 · 링 게이지 · 카운트업 · 스크롤 리빌, 라이트 테마
 - 이원화(D-001): 상시 뷰(최신 주 전 키워드 판정 상태) + 이벤트성 판정 카드(기회 발생 건)
 - 데이터 임베드 방식: 외부 서버·API 불필요 → GitHub Pages 게시 가능
-실행: python scripts/build_dashboard.py  →  dashboard/beauty-signal.html
+실행: python3 scripts/build_dashboard.py  →  dashboard/beauty-signal.html
 """
 import json
 from datetime import date, timedelta

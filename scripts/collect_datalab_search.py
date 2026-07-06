@@ -9,7 +9,7 @@
   2) 프로젝트 루트에 .env 파일 생성:
        NAVER_CLIENT_ID=발급받은ID
        NAVER_CLIENT_SECRET=발급받은SECRET
-실행: python scripts/collect_datalab_search.py
+실행: python3 scripts/collect_datalab_search.py
 """
 import csv
 import json

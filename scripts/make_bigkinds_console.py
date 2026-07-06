@@ -2,7 +2,7 @@
 빅카인즈 콘솔 수집 스크립트 생성기 (C 신호 갱신용, D-021 방식의 셀프서비스판)
 - scripts/bigkinds_queries.txt의 검색식 60개를 임베드한 브라우저 콘솔용 JS를 생성한다
 - 기간: 2023-07-03(고정, 주차 정렬 기준) ~ 가장 최근의 완결 주 일요일(자동 계산)
-실행: python scripts/make_bigkinds_console.py  →  scripts/bigkinds_console.js
+실행: python3 scripts/make_bigkinds_console.py  →  scripts/bigkinds_console.js
 사용법: docs/07_bigkinds_manual.md 참조
 """
 import json
@@ -90,7 +90,7 @@ CONSOLE_TEMPLATE = r"""/* 뷰티시그널 — 빅카인즈 주간 뉴스 건수 
   a.href = URL.createObjectURL(blob);
   a.download = 'bigkinds_weekly_raw.txt';
   document.body.appendChild(a); a.click(); a.remove();
-  console.log('완료 — bigkinds_weekly_raw.txt 다운로드됨. 다음: python scripts/bigkinds_to_csv.py');
+  console.log('완료 — bigkinds_weekly_raw.txt 다운로드됨. 다음: python3 scripts/bigkinds_to_csv.py');
 })();
 """
 

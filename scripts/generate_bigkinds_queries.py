@@ -2,7 +2,7 @@
 빅카인즈 C 신호 검색식 생성기
 - 키워드 60개 × 세그먼트 브랜드 목록으로 `키워드 AND (브랜드 OR ...)` 검색식 생성
 - 출력: scripts/bigkinds_queries.txt (빅카인즈 웹에 복붙용)
-실행: python scripts/generate_bigkinds_queries.py
+실행: python3 scripts/generate_bigkinds_queries.py
 """
 import csv
 from pathlib import Path

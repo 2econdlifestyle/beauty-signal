@@ -5,7 +5,7 @@
 - 핵심 원칙: 이미 기록된 (period, keyword) 행은 절대 수정하지 않음(판정의 사후 변경 불가).
   채점(hit4 열)만 비어 있던 것을 채움
 - 백테스트와 독립: 이 로그의 적중률이 쌓이면 "사후 수정 없는 실전 성적"이 됨
-실행: (데이터 갱신 후) python scripts/forward_test.py
+실행: (데이터 갱신 후) python3 scripts/forward_test.py
 """
 import csv
 from datetime import date

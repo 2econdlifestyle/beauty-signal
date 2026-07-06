@@ -2,7 +2,7 @@
 빅카인즈 콘솔 수집 결과 → data/raw/news_weekly.csv 변환기
 - 입력: ~/Downloads/bigkinds_weekly_raw.txt (bigkinds_console.js가 다운로드한 파일)
 - 검증: 60키워드 · 주 수 정렬(2023-07-03 월요일 기준) · keywords_v1.csv와 목록 일치
-실행: python scripts/bigkinds_to_csv.py [입력파일경로]
+실행: python3 scripts/bigkinds_to_csv.py [입력파일경로]
 """
 import csv
 import sys
@@ -45,7 +45,7 @@ def main():
         csv.writer(f).writerows(rows)
     total = sum(sum(w) for w in parsed.values())
     print(f"저장: {OUT} — 60키워드 × {n_weeks}주 = {len(rows)-1}행, 총 {total}건")
-    print("다음: python scripts/backtest.py && python scripts/build_dashboard.py")
+    print("다음: python3 scripts/backtest.py && python3 scripts/build_dashboard.py")
 
 
 if __name__ == "__main__":

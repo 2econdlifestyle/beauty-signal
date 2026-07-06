@@ -7,7 +7,7 @@
 - 산출: data/processed/search_trend_filled.csv (0 채움본, 신호 계산용)
         data/processed/anomaly_flags.csv (이상 징후 플래그)
         콘솔 리포트 (docs/04_data_validation.md에 편집 수록)
-실행: python scripts/validate_data.py
+실행: python3 scripts/validate_data.py
 """
 from datetime import date, timedelta
 from pathlib import Path

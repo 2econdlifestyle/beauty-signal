@@ -1,7 +1,7 @@
 # 3단계: 데이터 검증 — 결과 리포트
 
 > 최종 수정: 2026-07-05 · 상태: **3단계 완료** (자동 점검 21항목 전체 통과)
-> 실행: `python scripts/validate_data.py` (재현 가능)
+> 실행: `python3 scripts/validate_data.py` (재현 가능)
 
 ## 1. 점검 범위와 결과 요약
 

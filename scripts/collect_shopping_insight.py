@@ -1,7 +1,7 @@
 """
 네이버 쇼핑인사이트 카테고리 클릭 추이 수집기 (S 신호용) — v2
 - 키워드 단위 카테고리 매핑 (기본: 세그먼트 매핑, 예외: KEYWORD_CAT_OVERRIDES)
-- 실행: python scripts/collect_shopping_insight.py
+- 실행: python3 scripts/collect_shopping_insight.py
 """
 import json, os, time
 from pathlib import Path

@@ -13,7 +13,7 @@
 **1. 콘솔 스크립트 생성** (터미널, 프로젝트 폴더에서)
 
 ```bash
-python scripts/make_bigkinds_console.py
+python3 scripts/make_bigkinds_console.py
 ```
 
 → `scripts/bigkinds_console.js` 생성. 기간(2023-07-03 ~ 가장 최근 완결 주 일요일)이 자동 계산돼 들어감
@@ -34,7 +34,7 @@ python scripts/make_bigkinds_console.py
 **4. CSV 변환** (터미널)
 
 ```bash
-python scripts/bigkinds_to_csv.py          # 기본: ~/Downloads/bigkinds_weekly_raw.txt 읽음
+python3 scripts/bigkinds_to_csv.py          # 기본: ~/Downloads/bigkinds_weekly_raw.txt 읽음
 ```
 
 → `data/raw/news_weekly.csv` 갱신. 키워드 60개·주차 정렬·목록 일치를 자동 검증하고, 하나라도 어긋나면 중단됨
@@ -42,8 +42,8 @@ python scripts/bigkinds_to_csv.py          # 기본: ~/Downloads/bigkinds_weekly
 **5. 재계산 + 대시보드 갱신**
 
 ```bash
-python scripts/backtest.py
-python scripts/build_dashboard.py
+python3 scripts/backtest.py
+python3 scripts/build_dashboard.py
 git add -A && git commit -m "data: C 신호 주간 갱신" && git push   # Pages 자동 재배포
 ```
 
