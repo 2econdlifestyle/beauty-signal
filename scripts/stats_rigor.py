@@ -38,15 +38,16 @@ def two_prop_z(k1, n1, k2, n2):
             "z": round(z, 3), "p_value": round(p_val, 4)}
 
 
-def episodes_of(opp_df):
-    """키워드별 연속 주(t가 1씩 증가) 신호를 하나의 에피소드로 묶음.
+def episodes_of(opp_df, gap=0):
+    """키워드별 신호 묶음. gap = 에피소드 내에서 허용하는 신호 공백 주 수
+    (gap=0: 연속 주만 한 묶음, gap=1: 1주 쉬고 재발화해도 같은 에피소드, ...)
     에피소드 판정 = 첫 신호 주의 hit4 (담당자가 실제로 반응하는 시점은 첫 신호)"""
     eps = []
     for k, g in opp_df.groupby("keyword"):
         g = g.sort_values("t")
         cur = None
         for _, r in g.iterrows():
-            if cur is None or r.t != cur["t_end"] + 1:
+            if cur is None or r.t - cur["t_end"] > gap + 1:
                 if cur:
                     eps.append(cur)
                 cur = {"keyword": k, "t_start": int(r.t), "t_end": int(r.t),
@@ -101,6 +102,15 @@ def main():
     print(f"베이스라인 — D 발동 에피소드: {epd_hit}/{len(eps_d)} = {ci_epd['p']:.1%} [ {ci_epd['lo']:.1%} ~ {ci_epd['hi']:.1%} ]")
     ep_test = two_prop_z(ep_hit, len(eps), epd_hit, len(eps_d))
     print(f"에피소드 수준 개선: +{(ci_ep['p']-ci_epd['p'])*100:.1f}%p (z={ep_test['z']}, p={ep_test['p_value']})")
+    # 에피소드 정의(허용 공백) 민감도 — n이 정의에 민감한지 확인
+    gap_sens = []
+    for gp in (0, 1, 2):
+        e_o = episodes_of(opp, gap=gp); e_d = episodes_of(ev[ev.D], gap=gp)
+        ho = sum(1 for e in e_o if e["first_hit"]); hd = sum(1 for e in e_d if e["first_hit"])
+        gap_sens.append({"gap": gp, "n": len(e_o), "hit_rate": round(ho/len(e_o), 4),
+                         "baseline_n": len(e_d), "baseline_rate": round(hd/len(e_d), 4),
+                         "gain_pp": round((ho/len(e_o) - hd/len(e_d))*100, 1)})
+        print(f"  갭 허용 {gp}주: 기회 {len(e_o)}건 {ho/len(e_o):.1%} vs D {len(e_d)}건 {hd/len(e_d):.1%} → +{(ho/len(e_o)-hd/len(e_d))*100:.1f}%p")
 
     print()
     print("=" * 66)
@@ -123,7 +133,7 @@ def main():
               "episodes": {"n": len(eps), "hit": ep_hit, "ci": ci_ep,
                            "avg_weeks": round(sum(lens)/len(lens), 1), "max_weeks": max(lens),
                            "keywords": len(set(e['keyword'] for e in eps)),
-                           "baseline_d": ci_epd, "vs_baseline": ep_test},
+                           "baseline_d": ci_epd, "vs_baseline": ep_test, "gap_sensitivity": gap_sens},
               "gt_sensitivity": gt_sens}
     OUT.write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"\n저장: {OUT}")

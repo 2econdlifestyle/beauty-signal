@@ -46,7 +46,33 @@
       "diff_pp": 14.7,
       "z": 1.33,
       "p_value": 0.1836
-    }
+    },
+    "gap_sensitivity": [
+      {
+        "gap": 0,
+        "n": 32,
+        "hit_rate": 0.5938,
+        "baseline_n": 56,
+        "baseline_rate": 0.4464,
+        "gain_pp": 14.7
+      },
+      {
+        "gap": 1,
+        "n": 32,
+        "hit_rate": 0.5938,
+        "baseline_n": 55,
+        "baseline_rate": 0.4545,
+        "gain_pp": 13.9
+      },
+      {
+        "gap": 2,
+        "n": 30,
+        "hit_rate": 0.5667,
+        "baseline_n": 54,
+        "baseline_rate": 0.4444,
+        "gain_pp": 12.2
+      }
+    ]
   },
   "gt_sensitivity": [
     {

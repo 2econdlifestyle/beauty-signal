@@ -170,6 +170,8 @@ h1 .q{color:var(--rose)}
 .stat b span{font:inherit;display:inline}
 .stat b small{font-size:.55em}
 .stat > span{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;color:var(--sub);margin-top:6px;text-transform:uppercase}
+.stats-note{max-width:640px;margin:16px auto 0;font-size:12px;color:var(--sub);line-height:1.65}
+.stats-note b{color:var(--ink)}
 
 /* ---------- nav tabs ---------- */
 .tabs-wrap{position:sticky;top:0;z-index:40;padding:14px 0 12px;background:linear-gradient(var(--bg) 65%,transparent)}
@@ -324,9 +326,11 @@ footer a{color:var(--sub)}
   <div class="stats rv">
     <div class="stat"><b><em id="st1">0</em><em>%</em></b><span>기회 판정 적중률 (4주 지속)</span></div>
     <div class="stat"><b>+<span id="st2">0</span><small style="font-size:.55em">%p</small></b><span>급등 단독 판정 대비</span></div>
-    <div class="stat"><b><span id="st3">0</span><small style="font-size:.55em">건</small></b><span>백테스트 기회 신호 · 97주</span></div>
+    <div class="stat"><b><span id="st3">0</span><small style="font-size:.55em">건</small></b><span>주 단위 신호 · 독립 32 에피소드</span></div>
     <div class="stat"><b id="st4" style="font-size:clamp(17px,2vw,22px);line-height:2.1"></b><span>최신 판정 주</span></div>
   </div>
+  <p class="stats-note rv">위 적중률은 담당자가 매주 받는 <b>주 단위 판정</b> 기준입니다. 연속 신호를 1건으로 묶은
+  <b>독립 에피소드 기준으로는 32건 중 19건 = 59.4%</b> — 유리한 쪽만 헤드라인에 올리지 않습니다 (상세: 백테스트 검증 탭)</p>
 </section>
 
 <div class="tabs-wrap"><div class="tabs">
@@ -590,7 +594,9 @@ function renderBT(){
     <p class="exp">${S.judgment_weeks} 주간 롤링 백테스트. 기회 판정 ${main.signals}건 중 ${fmtP(main.precision)}가 이후 4주간
     수요를 유지·성장 — 검색량 급등 하나만 보는 판정 대비 <b style="color:var(--rose-deep)">+${gain}%p</b>.
     8주 기준으로도 ${fmtP(S.precision_8w["기회"])} vs ${fmtP(S.precision_8w["D 단독"])}로 우위가 유지됩니다.${DATA.stats?`
-    95% 신뢰구간은 ${fmtP(DATA.stats.ci_opportunity.lo)}~${fmtP(DATA.stats.ci_opportunity.hi)}이며, 필터 통과와 기각의 차이는 통계적으로 유의합니다(p<0.001).`:""}</p>
+    95% 신뢰구간은 ${fmtP(DATA.stats.ci_opportunity.lo)}~${fmtP(DATA.stats.ci_opportunity.hi)}이며, 필터 통과와 기각의 차이는 통계적으로 유의합니다(p<0.001).
+    연속 신호를 1건으로 묶은 <b>독립 에피소드 기준으로는 ${DATA.stats.episodes.n}건 중 ${DATA.stats.episodes.hit}건(${fmtP(DATA.stats.episodes.ci.p)})</b> —
+    주 단위를 헤드라인으로 쓰는 이유는 담당자가 실제로 받는 의사결정 단위가 주간 판정이기 때문이며, 두 수치를 항상 병기합니다.`:""}</p>
   </div>
   <div class="panel bars rv">
     <div class="bar-row"><span class="lb">무차별 판정 *</span><div class="track"><div class="fill" data-w="${all.precision*100}"></div></div><span class="vl">${fmtP(all.precision)}</span></div>
@@ -658,6 +664,7 @@ function renderBT(){
         <tr><td>통과 vs 기각 유의성</td><td>z=${DATA.stats.pass_vs_reject.z}, p&lt;0.001 <b style="color:var(--ok)">유의</b></td></tr>
         <tr><td>에피소드 재집계 (연속 신호=1건)</td><td>${DATA.stats.episodes.n}건 중 ${DATA.stats.episodes.hit}건 = ${fmtP(DATA.stats.episodes.ci.p)}</td></tr>
         <tr><td>ㄴ 에피소드 수준 개선</td><td>+${((DATA.stats.episodes.ci.p-DATA.stats.episodes.baseline_d.p)*100).toFixed(1)}%p, p=${DATA.stats.episodes.vs_baseline.p_value} <b class="warn">유의성 미달</b></td></tr>
+        <tr><td>ㄴ 에피소드 정의(갭 0/1/2주) 민감도</td><td>n=${(DATA.stats.episodes.gap_sensitivity||[]).map(g=>g.n).join('/')} · 개선 +${(DATA.stats.episodes.gap_sensitivity||[]).map(g=>g.gain_pp).join('/+')}%p — 정의에 둔감</td></tr>
         <tr><td>정답 임계값 민감도 (0.85~1.00)</td><td>개선 폭 +8.5~+19.2%p 방향 일관</td></tr>
       </tbody></table>
       <p style="font-size:12px;color:var(--sub);margin-top:10px">주 단위 신호는 자기상관이 있어(같은 키워드의 연속 신호), 독립 사건에 가까운 에피소드 단위로 재집계하면

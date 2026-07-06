@@ -1,0 +1,36 @@
+# 주간 포워드 테스트 리마인더 (D-034)
+# 매주 월요일 09:00 KST, 데이터 갱신 + forward_test 실행 체크리스트 이슈를 자동 생성.
+# 포워드 테스트의 가치는 "빠짐없는 기록"에 있으므로, 사람의 기억 대신 저장소가 재촉한다.
+# (수집 자체는 API 키·빅카인즈 로그인이 필요해 로컬 실행 — 이 워크플로는 습관을 강제하는 장치)
+name: weekly-forward-reminder
+on:
+  schedule:
+    - cron: "0 0 * * 1"   # 월요일 00:00 UTC = 09:00 KST
+  workflow_dispatch: {}
+permissions:
+  issues: write
+jobs:
+  remind:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const today = new Date().toISOString().slice(0, 10);
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `📡 주간 포워드 테스트 — ${today}`,
+              labels: ["forward-test"],
+              body: [
+                "매주 월요일 루틴 (약 10분). 포워드 로그는 append-only — 거르면 그 주는 영원히 빈다.",
+                "",
+                "- [ ] `python scripts/collect_datalab_search.py` (D — END_DATE 갱신 필요 시 docs/07 하단 참조)",
+                "- [ ] `python scripts/collect_shopping_insight.py` (S)",
+                "- [ ] 빅카인즈 5분 절차 (C — docs/07_bigkinds_manual.md)",
+                "- [ ] `python scripts/forward_test.py` → 기록·채점 결과 확인",
+                "- [ ] `python scripts/build_dashboard.py` && commit && push",
+                "",
+                "완료 후 이 이슈를 닫으세요. 로그: `data/forward/forward_log.csv`"
+              ].join("\n")
+            });
