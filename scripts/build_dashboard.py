@@ -656,20 +656,11 @@ function renderBT(){
   </div>
   <p class="foot-note rv">전체 방법론 문서: 저장소 docs/05_backtest_results.md · 의사결정 기록 31건: docs/decision_log.md</p>`;
 
-  $("#v-bt").innerHTML = `
-  <div class="subtabs rv">
-    <button class="stab on" data-s="sum">성적표 · 한눈에</button>
-    <button class="stab" data-s="how">어떻게 검증했나</button>
-    <button class="stab" data-s="deep">자세한 결과</button>
-  </div>
-  <div id="bt-sum">${sum}</div>
-  <div id="bt-how" style="display:none">${how}</div>
-  <div id="bt-deep" style="display:none">${deep}</div>`;
-  document.querySelectorAll(".stab").forEach(el=>el.onclick=()=>{
-    document.querySelectorAll(".stab").forEach(x=>x.classList.remove("on")); el.classList.add("on");
-    ["sum","how","deep"].forEach(s=>$("#bt-"+s).style.display = s===el.dataset.s?"":"none");
-    bindReveal();
-  });
+  mountSubtabs("#v-bt", [
+    {id: "bt-sum", label: "성적표 · 한눈에", html: sum},
+    {id: "bt-how", label: "어떻게 검증했나", html: how},
+    {id: "bt-deep", label: "자세한 결과", html: deep},
+  ]);
 }
 
 /* ---------- 카운트업 + 리빌 ---------- */
