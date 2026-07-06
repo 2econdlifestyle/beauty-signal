@@ -239,6 +239,16 @@ select{appearance:none;background:var(--card) url('data:image/svg+xml;utf8,<svg 
 svg.spark{display:block;width:100%;margin-top:10px}
 
 /* ---------- backtest ---------- */
+.subtabs{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin:2px 0 30px}
+.stab{border:1px solid var(--line);cursor:pointer;font:inherit;font-size:12.5px;font-weight:600;color:var(--sub);
+  padding:8px 16px;border-radius:999px;background:var(--card);transition:.25s}
+.stab.on{background:var(--rose);border-color:var(--rose);color:#fff;box-shadow:0 4px 14px rgba(228,87,127,.3)}
+.steps{max-width:720px;margin:0 auto;display:grid;gap:12px}
+.step{display:grid;grid-template-columns:34px 1fr;gap:14px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px}
+.step i{width:26px;height:26px;border-radius:50%;background:var(--ink);color:#fff;font-style:normal;font-family:var(--mono);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:2px}
+.step b{display:block;font-size:14px;letter-spacing:-.01em;margin-bottom:4px}
+.step p{font-size:12.5px;color:var(--sub);line-height:1.65}
+.step p em{font-style:normal;color:var(--ink);font-weight:700}
 .bt-hl{text-align:center;margin:26px auto 44px;max-width:860px}
 .bt-hl .big{font-size:clamp(30px,4.6vw,54px);font-weight:800;letter-spacing:-.04em;line-height:1.15}
 .bt-hl .big em{font-style:normal;color:var(--rose)}
@@ -477,10 +487,12 @@ function renderCards(){
   draw();
 }
 
-/* ---------- 백테스트 ---------- */
+/* ---------- 백테스트 (서브탭: 성적표 / 검증 방법 / 자세한 결과) ---------- */
 function renderBT(){
   const gain = ((main.precision-dOnly.precision)*100).toFixed(1);
-  $("#v-bt").innerHTML = `
+  const D = DATA.decomp;
+
+  const sum = `
   <div class="bt-hl rv">
     <div class="big">급등 맥락의 동전 던지기 <em>${fmtP(dOnly.precision)}</em>를<br>교차검증이 <em>${fmtP(main.precision)}</em>로 끌어올립니다</div>
     <p class="exp">${S.judgment_weeks} 주간 롤링 백테스트. 기회 판정 ${main.signals}건 중 ${fmtP(main.precision)}가 이후 4주간
@@ -492,27 +504,83 @@ function renderBT(){
     <div class="bar-row"><span class="lb">검색량 급등 단독</span><div class="track"><div class="fill" data-w="${dOnly.precision*100}"></div></div><span class="vl">${fmtP(dOnly.precision)}</span></div>
     <div class="bar-row hero-bar"><span class="lb">기회 = D∧S∧¬C</span><div class="track"><div class="fill" data-w="${main.precision*100}"></div></div><span class="vl">${fmtP(main.precision)}</span></div>
     <p style="font-size:12px;color:var(--faint);margin-top:14px">* 무차별 ${fmtP(all.precision)}는 급등이 없는 평탄한 주가 지배하는 수치 — 정답 정의상 "유지"가 자명하게 참이 되는 구간입니다.
-    판정이 실제로 필요한 급등 맥락(D 발동 ${DATA.decomp.d_total}건)의 기저 적중률은 ${fmtP(dOnly.precision)}이며, 이것이 올바른 비교선입니다.</p>
+    판정이 실제로 필요한 급등 맥락(D 발동 ${D.d_total}건)의 기저 적중률은 ${fmtP(dOnly.precision)}이며, 이것이 올바른 비교선입니다.</p>
   </div>
-  <div class="grid2">
+  <p class="foot-note rv">이 성적표가 어떻게 나왔는지 궁금하다면 위의 <b>어떻게 검증했나</b>, 숫자를 더 파고들고 싶다면 <b>자세한 결과</b> 탭을 여세요.</p>`;
+
+  const how = `
+  <p class="note rv">공정한 성적표를 만들기 위해 지킨 절차입니다. 핵심은 <b>미래 정보를 몰래 쓰지 않는 것</b>과 <b>유리한 문제만 고르지 않는 것</b>.</p>
+  <div class="steps rv">
+    <div class="step"><i>1</i><div><b>문제지를 먼저 봉인</b><p>키워드 60개를 백테스트 시작 <em>전에</em> 확정하고 이후 추가·삭제를 금지했습니다. 잘된 키워드만 골라 넣는 선택 편향을 차단하기 위해서입니다. 정체·하락 키워드를 절반 이상 일부러 포함했고, 예외적 교체 1회(데이터 부재 키워드)는 사전 정의된 규칙에 따라 이뤄졌으며 이력을 공개합니다.</p></div></div>
+    <div class="step"><i>2</i><div><b>매주 롤링 판정</b><p>${S.judgment_weeks} 동안 매주 월요일마다, <em>그 시점까지의 데이터만으로</em> 60개 키워드 전체를 판정했습니다. 총 ${(5820).toLocaleString()}회의 판정 기회 중 규칙(D∧S∧¬C)을 충족한 것이 기회 신호 ${main.signals}건입니다.</p></div></div>
+    <div class="step"><i>3</i><div><b>4주 뒤 사후 채점</b><p>기회로 판정한 각 건에 대해 4주를 기다린 뒤 채점했습니다. 정답 기준: <em>이후 4주 검색량 평균 ≥ 직전 4주 평균 × 0.90</em> — 진짜 기회라면 수요가 반짝하고 꺼지지 않아야 하니까요. 1~2주 폭등 후 소멸하는 반짝 밈은 실패로 분류됩니다.</p></div></div>
+    <div class="step"><i>4</i><div><b>베이스라인과 비교</b><p>67.1%가 의미 있으려면 비교 대상이 필요합니다. ①모든 키워드를 항상 기회로 보는 무차별 판정 ②검색량 급등(D) 하나만 보는 판정 — 특히 ②가 실전의 대안이며, 교차검증의 기여는 ②와의 차이(+${gain}%p)로 측정합니다.</p></div></div>
+    <div class="step"><i>5</i><div><b>민감도와 사후 수정까지 공개</b><p>임계값을 바꿔도 결과가 흔들리지 않는지(그리드 3×3), 관찰 기간을 8주로 늘려도 우위가 유지되는지 확인했습니다. 백테스트 후 발견된 버그(신생 키워드 분모 붕괴)의 수정은 <em>전/후 수치를 함께 공개</em>해 유리한 쪽만 보여주지 않았습니다 — 전체 기록은 저장소 docs/decision_log.md에 있습니다.</p></div></div>
+  </div>
+  <p class="foot-note rv">한계도 명시합니다: 정답이 매출이 아닌 검색 수요 지속성(공개 매출 데이터 부재), 유니버스 구성에 남는 사후 지식 편향, 97주라는 검증 기간. 완전한 목록: 저장소 README의 "한계" 섹션.</p>`;
+
+  const gridRows = S.grid_sensitivity.map(g=>`<tr><td>${g.rule}</td><td>${g.signals}</td><td>${fmtP(g.precision)}</td></tr>`).join("");
+  const guardRows = (S.guard_sensitivity||[]).map(g=>`<tr><td>${g.rule.replace('MIN_BASE=','가드 ')}${g.rule==='MIN_BASE=5'?' (채택)':''}</td><td>${g.signals}</td><td>${fmtP(g.precision)}</td></tr>`).join("");
+  const deep = `
+  <p class="note rv">규칙별 성능부터 민감도까지, 성적표 뒤의 전체 숫자입니다. 실패를 포함한 원자료는 <b>판정 카드</b> 탭에서 건별로 볼 수 있습니다.</p>
+  <div class="grid2" style="margin-bottom:18px">
+    <div class="panel mini rv">
+      <h4>규칙별 성능</h4>
+      <table><thead><tr><th>규칙</th><th>신호</th><th>4주 적중률</th><th>8주</th><th>연간</th></tr></thead><tbody>
+        <tr><td>무차별</td><td>${all.signals}</td><td>${fmtP(all.precision)}</td><td>—</td><td>—</td></tr>
+        <tr><td>D 단독</td><td>${dOnly.signals}</td><td>${fmtP(dOnly.precision)}</td><td>${fmtP(S.precision_8w["D 단독"])}</td><td>${dOnly.signals_per_year}건</td></tr>
+        <tr><td><b>기회 = D∧S∧¬C</b></td><td><b>${main.signals}</b></td><td style="color:var(--ok);font-weight:700">${fmtP(main.precision)}</td><td>${fmtP(S.precision_8w["기회"])}</td><td>${main.signals_per_year}건</td></tr>
+      </tbody></table>
+    </div>
     <div class="panel mini rv">
       <h4>교차검증 기여 분해 — 필터는 나쁜 신호를 골라 버린다</h4>
       <table><thead><tr><th>구분</th><th>건수</th><th>적중률</th></tr></thead><tbody>
-        <tr><td>D 발동 전체</td><td>${DATA.decomp.d_total}</td><td>${fmtP(DATA.decomp.d_hit)}</td></tr>
-        <tr><td>ㄴ S·C 필터로 기각</td><td>${DATA.decomp.rej_n}</td><td class="warn">${fmtP(DATA.decomp.rej_hit)}</td></tr>
+        <tr><td>D 발동 전체</td><td>${D.d_total}</td><td>${fmtP(D.d_hit)}</td></tr>
+        <tr><td>ㄴ S·C 필터로 기각</td><td>${D.rej_n}</td><td class="warn">${fmtP(D.rej_hit)}</td></tr>
         <tr><td>ㄴ 필터 통과 = 기회</td><td>${main.signals}</td><td style="color:var(--ok);font-weight:700">${fmtP(main.precision)}</td></tr>
       </tbody></table>
+      <p style="font-size:12px;color:var(--sub);margin-top:10px">기각된 신호의 적중률(${fmtP(D.rej_hit)})이 통과 신호(${fmtP(main.precision)})의 절반 수준 — 필터가 무작위로 줄인 게 아니라는 직접 증거입니다.</p>
+    </div>
+    <div class="panel mini rv">
+      <h4>임계값 민감도 (그리드 3×3)</h4>
+      <table><thead><tr><th>조건</th><th>신호</th><th>적중률</th></tr></thead><tbody>${gridRows}</tbody></table>
+      <p style="font-size:12px;color:var(--sub);margin-top:10px">어떤 조합에서도 64~67%로 안정 — 채택값(D≥1.3, 계절≥1.15)은 사후 튜닝이 아니라 설계 때의 초기 가설값입니다.</p>
+    </div>
+    <div class="panel mini rv">
+      <h4>분모 붕괴 가드 전/후 (사후 수정 공개)</h4>
+      <table><thead><tr><th>조건</th><th>신호</th><th>적중률</th></tr></thead><tbody>${guardRows}</tbody></table>
+      <p style="font-size:12px;color:var(--sub);margin-top:10px">신생 키워드의 분모(직전 12주 평균)가 0에 수렴해 배율이 폭발하던 버그를 가드로 수정 — 수정 전 63.9%였음을 숨기지 않습니다 (decision_log D-027).</p>
     </div>
     <div class="panel mini rv">
       <h4>신뢰도 점수 밴드별 적중률 — 공개된 한계</h4>
       <table><thead><tr><th>점수</th><th>n</th><th>적중률</th></tr></thead><tbody>
         ${Object.entries(S.score_bands).map(([b,v])=>`<tr><td>${b}</td><td>${v.n}</td><td>${fmtP(v.precision)}</td></tr>`).join("")}
       </tbody></table>
-      <p style="font-size:12px;color:var(--sub);margin-top:10px">점수는 "확신도"가 아니라 "규칙 충족 강도"입니다 — 밴드 간 적중률 차이가 크지 않으므로 점수 서열을 과신하지 마세요 (상세 한계: decision_log D-025·D-027).</p>
+      <p style="font-size:12px;color:var(--sub);margin-top:10px">점수는 "확신도"가 아니라 "규칙 충족 강도" — 밴드 간 차이가 크지 않으므로 점수 서열을 과신하지 마세요.</p>
+    </div>
+    <div class="panel mini rv">
+      <h4>신호 분포 — 조용한 유니버스는 설계의 결과</h4>
+      <p style="font-size:12.5px;color:var(--sub);line-height:1.7">키워드 60개 중 신호를 낸 것은 18개. 나머지 42개가 2년간 침묵한 것은 결함이 아니라,
+      의도적으로 절반 이상 포함한 정체·하락 키워드(음성 대조군)에서 <b style="color:var(--ink)">오탐이 억제되고 있다는 증거</b>입니다.
+      연간 44건은 담당자가 전수 검토할 수 있는 빈도입니다.</p>
     </div>
   </div>
-  <p class="foot-note rv">유니버스 60개는 백테스트 전 동결(v1.1 · 예외 조항 1회 사용 이력 공개) · 정답 = 신호 후 4주 평균 ≥ 직전 4주 × 0.90
-  (매출 데이터 부재로 수요 지속성을 대리 지표로 사용) · 임계값은 초기 가설값 유지 — 그리드 민감도 64.1~67.2%로 안정 · 분모 붕괴 가드는 사후 추가이며 전/후 수치를 공개 (D-027) · 상세: docs/05_backtest_results.md</p>`;
+  <p class="foot-note rv">전체 방법론 문서: 저장소 docs/05_backtest_results.md · 의사결정 기록 31건: docs/decision_log.md</p>`;
+
+  $("#v-bt").innerHTML = `
+  <div class="subtabs rv">
+    <button class="stab on" data-s="sum">성적표 · 한눈에</button>
+    <button class="stab" data-s="how">어떻게 검증했나</button>
+    <button class="stab" data-s="deep">자세한 결과</button>
+  </div>
+  <div id="bt-sum">${sum}</div>
+  <div id="bt-how" style="display:none">${how}</div>
+  <div id="bt-deep" style="display:none">${deep}</div>`;
+  document.querySelectorAll(".stab").forEach(el=>el.onclick=()=>{
+    document.querySelectorAll(".stab").forEach(x=>x.classList.remove("on")); el.classList.add("on");
+    ["sum","how","deep"].forEach(s=>$("#bt-"+s).style.display = s===el.dataset.s?"":"none");
+    bindReveal();
+  });
 }
 
 /* ---------- 카운트업 + 리빌 ---------- */
