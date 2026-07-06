@@ -365,13 +365,15 @@ function countUp(el, target, decimals=1, dur=1400){
   }
   requestAnimationFrame(step);
 }
+/* threshold 0: 60행 표처럼 뷰포트보다 훨씬 큰 요소도 1px만 보이면 리빌
+   (threshold 0.15는 요소 높이가 뷰포트의 ~6.7배를 넘으면 영원히 발화하지 않음) */
 const io = new IntersectionObserver(es=>es.forEach(e=>{
   if(!e.isIntersecting) return;
   e.target.classList.add("in");
   e.target.querySelectorAll(".fill").forEach(f=>f.style.width=f.dataset.w+"%");
   e.target.querySelectorAll(".fgc").forEach(r=>r.style.strokeDashoffset=r.dataset.off);
   io.unobserve(e.target);
-}),{threshold:.15});
+}),{threshold:0,rootMargin:"0px 0px -40px 0px"});
 function bindReveal(){document.querySelectorAll(".rv:not(.in)").forEach(el=>io.observe(el))}
 
 renderNow(); renderCards(); renderBT();
