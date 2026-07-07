@@ -379,10 +379,16 @@ footer a{color:var(--sub)}
 <script>
 const DATA = __DATA__;
 const $ = s => document.querySelector(s);
+/* 주 시작일(월) → "M/D~M/D" 범위 표기 (주차 = 월요일 시작 관례의 오해 방지) */
+function weekRange(p){
+  const [y,m,d] = p.split("-").map(Number);
+  const a = new Date(y, m-1, d), b = new Date(y, m-1, d+6);
+  return `${a.getMonth()+1}/${a.getDate()}~${b.getMonth()+1}/${b.getDate()}`;
+}
 const fmtP = p => p==null ? "—" : (p*100).toFixed(1)+"%";
 const S = DATA.summary, main = S.results[2], dOnly = S.results[1], all = S.results[0];
 
-$("#hdrChip").textContent = "LATEST " + DATA.latest_period;
+$("#hdrChip").textContent = "LATEST " + DATA.latest_period + " (" + weekRange(DATA.latest_period) + ")";
 $("#built").textContent = "BUILT " + DATA.built;
 
 /* ---------- 탭 ---------- */
@@ -445,7 +451,7 @@ function renderNow(){
   /* --- 간단히 보기 (입문자·일반) --- */
   const simple = `
   <div class="shero rv">
-    <div class="shero-badge">${DATA.latest_period} 주 판정</div>
+    <div class="shero-badge">${DATA.latest_period} 주 판정 (${weekRange(DATA.latest_period)})</div>
     <div class="shero-big">${nOpp===0?"이번 주는 <em>서두르지 않아도</em> 됩니다":`지금 검토해볼 키워드가 <em>${nOpp}개</em> 있습니다`}</div>
     <p>뷰티 키워드 60개를 전부 점검했습니다. ${nOpp===0
       ?"세 조건(수요 급등·구매 관심·경쟁 여유)을 모두 충족한 키워드가 없었어요. 조용한 것도 판정입니다 — 무리하게 움직일 이유가 없다는 뜻이니까요."
@@ -470,7 +476,7 @@ function renderNow(){
 
   /* --- 전체 데이터 (전문가) --- */
   const pro = `
-  <p class="note rv">최신 주 <span class="f">${DATA.latest_period}</span> 기준, 키워드 60개의 이번 주 상태입니다.
+  <p class="note rv">최신 완결 주 <span class="f">${DATA.latest_period} 주 (${weekRange(DATA.latest_period)})</span> 기준, 키워드 60개의 상태입니다. 주차는 시작일(월요일)로 표기하며, 진행 중인 이번 주는 끝나야 판정됩니다.
   ${nOpp===0?"<b>이번 주는 기회 신호가 없습니다</b> — 서두를 필요 없다는 뜻이고, 무신호도 판정입니다.":`이번 주 기회 신호 <b>${nOpp}건</b>이 있습니다.`}</p>
   <div class="legend rv">
     <div><i class="chip d">D</i><b>수요 급등</b><span>사람들이 이 키워드를 갑자기 많이 검색하기 시작했나요? (작년 이맘때의 시즌 효과는 제외)</span></div>
@@ -734,7 +740,7 @@ renderNow(); renderCards(); renderBT();
 countUp($("#st1"), main.precision*100, 1);
 countUp($("#st2"), (main.precision-dOnly.precision)*100, 1);
 countUp($("#st3"), main.signals, 0);
-$("#st4").textContent = DATA.latest_period;
+$("#st4").textContent = weekRange(DATA.latest_period);
 bindReveal();
 </script>
 </body>
