@@ -7,17 +7,17 @@
     "n": 82
   },
   "ci_d_fired": {
-    "p": 0.4789,
-    "lo": 0.4128,
-    "hi": 0.5457,
-    "k": 102,
-    "n": 213
+    "p": 0.4791,
+    "lo": 0.4132,
+    "hi": 0.5456,
+    "k": 103,
+    "n": 215
   },
   "pass_vs_reject": {
     "p1": 0.6707,
-    "p2": 0.3588,
-    "diff_pp": 31.2,
-    "z": 4.435,
+    "p2": 0.3609,
+    "diff_pp": 31.0,
+    "z": 4.417,
     "p_value": 0.0
   },
   "episodes": {
@@ -34,22 +34,30 @@
     "max_weeks": 8,
     "keywords": 18,
     "baseline_d": {
-      "p": 0.4464,
-      "lo": 0.3239,
-      "hi": 0.5759,
+      "p": 0.4386,
+      "lo": 0.3177,
+      "hi": 0.5672,
       "k": 25,
-      "n": 56
+      "n": 57
     },
     "vs_baseline": {
       "p1": 0.5938,
-      "p2": 0.4464,
-      "diff_pp": 14.7,
-      "z": 1.33,
-      "p_value": 0.1836
+      "p2": 0.4386,
+      "diff_pp": 15.5,
+      "z": 1.405,
+      "p_value": 0.1601
     },
     "gap_sensitivity": [
       {
         "gap": 0,
+        "n": 32,
+        "hit_rate": 0.5938,
+        "baseline_n": 57,
+        "baseline_rate": 0.4386,
+        "gain_pp": 15.5
+      },
+      {
+        "gap": 1,
         "n": 32,
         "hit_rate": 0.5938,
         "baseline_n": 56,
@@ -57,20 +65,12 @@
         "gain_pp": 14.7
       },
       {
-        "gap": 1,
-        "n": 32,
-        "hit_rate": 0.5938,
-        "baseline_n": 55,
-        "baseline_rate": 0.4545,
-        "gain_pp": 13.9
-      },
-      {
         "gap": 2,
         "n": 30,
         "hit_rate": 0.5667,
-        "baseline_n": 54,
-        "baseline_rate": 0.4444,
-        "gain_pp": 12.2
+        "baseline_n": 55,
+        "baseline_rate": 0.4364,
+        "gain_pp": 13.0
       }
     ]
   },
@@ -78,26 +78,26 @@
     {
       "gt": 0.85,
       "opp": 0.7195,
-      "d_only": 0.5305,
+      "d_only": 0.5302,
       "gain_pp": 18.9
     },
     {
       "gt": 0.9,
       "opp": 0.6707,
-      "d_only": 0.4789,
+      "d_only": 0.4791,
       "gain_pp": 19.2
     },
     {
       "gt": 0.95,
       "opp": 0.5488,
-      "d_only": 0.3897,
-      "gain_pp": 15.9
+      "d_only": 0.386,
+      "gain_pp": 16.3
     },
     {
       "gt": 1.0,
       "opp": 0.3902,
-      "d_only": 0.3052,
-      "gain_pp": 8.5
+      "d_only": 0.3023,
+      "gain_pp": 8.8
     }
   ]
 }

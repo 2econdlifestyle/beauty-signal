@@ -1,97 +1,97 @@
 {
-  "eval_rows": 5820,
-  "judgment_weeks": "2024-07-22~2026-05-25 (97주)",
-  "base_rate_hit4": 0.7177,
+  "eval_rows": 5880,
+  "judgment_weeks": "2024-07-22~2026-06-01 (98주)",
+  "base_rate_hit4": 0.7168,
   "results": [
     {
       "rule": "무차별(베이스라인1)",
-      "signals": 5820,
-      "precision": 0.7177,
+      "signals": 5880,
+      "precision": 0.7168,
       "recall": 1.0,
       "signals_per_year": 3120.0
     },
     {
       "rule": "D 단독(베이스라인2)",
-      "signals": 213,
-      "precision": 0.4789,
+      "signals": 215,
+      "precision": 0.4791,
       "recall": 0.0244,
-      "signals_per_year": 114.2
+      "signals_per_year": 114.1
     },
     {
       "rule": "기회 = D∧S∧¬C (본 신호)",
       "signals": 82,
       "precision": 0.6707,
-      "recall": 0.0132,
-      "signals_per_year": 44.0
+      "recall": 0.013,
+      "signals_per_year": 43.5
     }
   ],
   "precision_8w": {
-    "D 단독": 0.4265,
-    "기회": 0.5696
+    "D 단독": 0.4244,
+    "기회": 0.5625
   },
   "grid_sensitivity": [
     {
       "rule": "D≥1.2, 계절≥1.1",
       "signals": 130,
       "precision": 0.6462,
-      "recall": 0.0201,
-      "signals_per_year": 69.7
+      "recall": 0.0199,
+      "signals_per_year": 69.0
     },
     {
       "rule": "D≥1.2, 계절≥1.15",
       "signals": 114,
       "precision": 0.6579,
-      "recall": 0.018,
-      "signals_per_year": 61.1
+      "recall": 0.0178,
+      "signals_per_year": 60.5
     },
     {
       "rule": "D≥1.2, 계절≥1.2",
       "signals": 101,
       "precision": 0.6436,
-      "recall": 0.0156,
-      "signals_per_year": 54.1
+      "recall": 0.0154,
+      "signals_per_year": 53.6
     },
     {
       "rule": "D≥1.3, 계절≥1.1",
       "signals": 92,
       "precision": 0.6413,
-      "recall": 0.0141,
-      "signals_per_year": 49.3
+      "recall": 0.014,
+      "signals_per_year": 48.8
     },
     {
       "rule": "D≥1.3, 계절≥1.15",
       "signals": 82,
       "precision": 0.6707,
-      "recall": 0.0132,
-      "signals_per_year": 44.0
+      "recall": 0.013,
+      "signals_per_year": 43.5
     },
     {
       "rule": "D≥1.3, 계절≥1.2",
       "signals": 75,
       "precision": 0.6533,
-      "recall": 0.0117,
-      "signals_per_year": 40.2
+      "recall": 0.0116,
+      "signals_per_year": 39.8
     },
     {
       "rule": "D≥1.4, 계절≥1.1",
       "signals": 68,
       "precision": 0.6471,
-      "recall": 0.0105,
-      "signals_per_year": 36.5
+      "recall": 0.0104,
+      "signals_per_year": 36.1
     },
     {
       "rule": "D≥1.4, 계절≥1.15",
       "signals": 61,
       "precision": 0.6721,
-      "recall": 0.0098,
-      "signals_per_year": 32.7
+      "recall": 0.0097,
+      "signals_per_year": 32.4
     },
     {
       "rule": "D≥1.4, 계절≥1.2",
       "signals": 56,
       "precision": 0.6607,
-      "recall": 0.0089,
-      "signals_per_year": 30.0
+      "recall": 0.0088,
+      "signals_per_year": 29.7
     }
   ],
   "guard_sensitivity": [
@@ -99,29 +99,29 @@
       "rule": "MIN_BASE=0",
       "signals": 97,
       "precision": 0.6392,
-      "recall": 0.0148,
-      "signals_per_year": 52.0
+      "recall": 0.0147,
+      "signals_per_year": 51.5
     },
     {
       "rule": "MIN_BASE=3",
       "signals": 92,
       "precision": 0.6413,
-      "recall": 0.0141,
-      "signals_per_year": 49.3
+      "recall": 0.014,
+      "signals_per_year": 48.8
     },
     {
       "rule": "MIN_BASE=5",
       "signals": 82,
       "precision": 0.6707,
-      "recall": 0.0132,
-      "signals_per_year": 44.0
+      "recall": 0.013,
+      "signals_per_year": 43.5
     },
     {
       "rule": "MIN_BASE=7",
       "signals": 80,
       "precision": 0.6625,
-      "recall": 0.0127,
-      "signals_per_year": 42.9
+      "recall": 0.0126,
+      "signals_per_year": 42.4
     }
   ],
   "score_bands": {
